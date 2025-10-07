@@ -6,7 +6,7 @@ Authors@R:
            email = "lyu.geosocial@gmail.com", 
            role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0009-0002-6003-3800"))
-Description: What the package does (one paragraph).
+Description: Methods for quantifying temporal and spatial causality through information flow, and decomposing it into unique, redundant, and synergistic components, following the framework described in Martinez-Sanchez et al. (2024) <doi:10.1038/s41467-024-53373-4>.
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
