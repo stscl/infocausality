@@ -42,7 +42,7 @@ Rcpp::NumericVector RcppGenLatticeLag(Rcpp::NumericVector vec,
     std::vector<int> current_subset;
 
     // Iterate over each element in the current subset
-    for (size_t j = 0; j < current_nb.size(); ++j) {
+    for (int j = 0; j < current_nb.size(); ++j) {
       // Subtract one from each element to convert from R's 1-based indexing to C++'s 0-based indexing
       current_subset.push_back(current_nb[j] - 1);
     }
