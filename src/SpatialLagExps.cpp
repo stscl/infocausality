@@ -32,6 +32,7 @@
  * print(result)
  * }
  */
+// [[Rcpp::export(rng = false)]]
 Rcpp::NumericVector RcppGenLatticeLagUni(const Rcpp::NumericVector& vec,
                                          const Rcpp::List& nb,
                                          int lagNum = 1) {
