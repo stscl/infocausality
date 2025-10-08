@@ -7,8 +7,8 @@
 }
 
 .surd_grid = \(data, target, agents, lag = 1, bin = 5, max.combs = NULL, cores = 1){
-  obs = cbind(terra::values(data[[target]], mat = TRUE, na.rm = FALSE),
-              RcppGenGridLagMulti(terra::values(data[[agents]], mat = TRUE, na.rm = FALSE)),
+  obs = cbind(terra::values(data[[target]],mat = TRUE,na.rm = FALSE),
+              RcppGenGridLagMulti(terra::values(data[[agents]],mat = TRUE,na.rm = FALSE)),
                                   terra::nrow(data), lag)
 
 }
