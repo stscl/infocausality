@@ -32,9 +32,8 @@
 #' @param agents names of agent variables.
 #' @param lag (optional) lag order.
 #' @param bin (optional) number of discretization bins.
-#' @param max.combs (optional) maximum combination order used for synergy computation. If `NULL`,
-#' the standard SURD decomposition is applied.
-#' @param cores (optional) number of parallel cores for computation.
+#' @param max.combs (optional) maximum combination order. If `NULL`, the standard SURD decomposition is applied.
+#' @param cores (optional) number of cores for parallel computation.
 #' @param backend (optional) `Joblib` backend: `loky`, `threading`, or `multiprocessing`.
 #' @param nb (optional) neighbours list.
 #'
@@ -44,7 +43,7 @@
 #'   \item{unique}{Unique information contributions per variable.}
 #'   \item{redundant}{Redundant information shared by agent subsets.}
 #'   \item{mutual_info}{Mutual information measures for each combination.}
-#'   \item{info_leak}{Scalar value representing information leak ratio.}
+#'   \item{info_leak}{Information leak ratio.}
 #' }
 #'
 #' @export

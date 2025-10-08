@@ -52,10 +52,9 @@
 
 \item{bin}{(optional) number of discretization bins.}
 
-\item{max.combs}{(optional) maximum combination order used for synergy computation. If \code{NULL},
-the standard SURD decomposition is applied.}
+\item{max.combs}{(optional) maximum combination order. If \code{NULL}, the standard SURD decomposition is applied.}
 
-\item{cores}{(optional) number of parallel cores for computation.}
+\item{cores}{(optional) number of cores for parallel computation.}
 
 \item{backend}{(optional) \code{Joblib} backend: \code{loky}, \code{threading}, or \code{multiprocessing}.}
 
@@ -68,7 +67,7 @@ A list.
 \item{unique}{Unique information contributions per variable.}
 \item{redundant}{Redundant information shared by agent subsets.}
 \item{mutual_info}{Mutual information measures for each combination.}
-\item{info_leak}{Scalar value representing information leak ratio.}
+\item{info_leak}{Information leak ratio.}
 }
 }
 \description{
