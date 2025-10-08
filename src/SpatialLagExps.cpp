@@ -34,7 +34,7 @@
  */
 Rcpp::NumericVector RcppGenLatticeLagUni(const Rcpp::NumericVector& vec,
                                          const Rcpp::List& nb,
-                                         int lagNum) {
+                                         int lagNum = 1) {
   // Convert R numeric vector to std::vector<double>
   std::vector<double> cpp_vec = Rcpp::as<std::vector<double>>(vec);
 
@@ -103,7 +103,7 @@ Rcpp::NumericVector RcppGenLatticeLagUni(const Rcpp::NumericVector& vec,
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericMatrix RcppGenLatticeLagMulti(const Rcpp::NumericMatrix& vecs,
                                            const Rcpp::List& nb,
-                                           int lagNum) {
+                                           int lagNum = 1) {
   // --- Validate inputs ---
   if (vecs.nrow() == 0 || vecs.ncol() == 0) {
     Rcpp::stop("Input matrix 'vecs' must not be empty.");
@@ -191,7 +191,7 @@ Rcpp::NumericMatrix RcppGenLatticeLagMulti(const Rcpp::NumericMatrix& vecs,
  */
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericVector RcppGenGridLagUni(const Rcpp::NumericMatrix& mat,
-                                      int lagNum) {
+                                      int lagNum = 1) {
   // Convert R matrix to std::vector<std::vector<double>>
   int nrow = mat.nrow();
   int ncol = mat.ncol();
@@ -246,7 +246,7 @@ Rcpp::NumericVector RcppGenGridLagUni(const Rcpp::NumericMatrix& mat,
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericMatrix RcppGenGridLagMulti(const Rcpp::NumericMatrix& mat,
                                         int nrow,
-                                        int lagNum) {
+                                        int lagNum = 1) {
   // --- Validate inputs ---
   if (mat.nrow() == 0 || mat.ncol() == 0) {
     Rcpp::stop("Input matrix 'mat' must not be empty.");
