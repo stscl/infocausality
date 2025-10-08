@@ -7,7 +7,16 @@
 \alias{surd,SpatRaster-method}
 \title{Decomposing causality into its synergistic,unique,and redundant components}
 \usage{
-\S4method{surd}{data.frame}(data, target, agents, lag = 1, bin = 5, max.combs = NULL, cores = 1)
+\S4method{surd}{data.frame}(
+  data,
+  target,
+  agents,
+  lag = 1,
+  bin = 5,
+  max.combs = NULL,
+  cores = 1,
+  backend = "threading"
+)
 
 \S4method{surd}{sf}(
   data,
@@ -17,10 +26,20 @@
   bin = 5,
   max.combs = NULL,
   cores = 1,
+  backend = "threading",
   nb = NULL
 )
 
-\S4method{surd}{SpatRaster}(data, target, agents, lag = 1, bin = 5, max.combs = NULL, cores = 1)
+\S4method{surd}{SpatRaster}(
+  data,
+  target,
+  agents,
+  lag = 1,
+  bin = 5,
+  max.combs = NULL,
+  cores = 1,
+  backend = "threading"
+)
 }
 \arguments{
 \item{data}{observation data.}
@@ -37,6 +56,8 @@
 the standard SURD decomposition is applied.}
 
 \item{cores}{(optional) number of parallel cores for computation.}
+
+\item{backend}{(optional) \code{Joblib} backend: \code{loky}, \code{threading}, or \code{multiprocessing}.}
 
 \item{nb}{(optional) neighbours list.}
 }
