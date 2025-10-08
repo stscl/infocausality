@@ -32,8 +32,8 @@
  * # Expected output:
  * #      [,1] [,2] [,3]
  * # [1,]  NaN  NaN  NaN
- * # [2,]    1    2    3
- * # [3,]    4    5    6
+ * # [2,]    1    4    7
+ * # [3,]    2    5    8
  *
  */
 // [[Rcpp::export(rng = false)]]
