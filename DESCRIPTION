@@ -18,6 +18,7 @@ Depends:
 LinkingTo: 
     Rcpp
 Imports: 
+    methods,
     reticulate,
     sdsfun,
     sf,
