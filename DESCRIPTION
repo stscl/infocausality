@@ -18,6 +18,7 @@ Depends:
 LinkingTo: 
     Rcpp
 Imports: 
+    reticulate,
     sdsfun,
     sf,
     terra
