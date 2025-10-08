@@ -8,5 +8,5 @@ utils_run_surd = \(obs, bin = 5L, max.combs = NULL, cores = 1){
   ic = utils_source_python(system.file("python", "InfoCausality.py",
                                        package = "infocausality"))
   ict = ic$InfoCausality(obs, nbins = as.integer(bin))
-  ict$surd(max.combs,cores)
+  invisible(ict$surd(max.combs,cores))
 }
