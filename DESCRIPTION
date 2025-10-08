@@ -23,6 +23,7 @@ Imports:
     sf,
     terra
 Suggests: 
+    gdverse,
     Rcpp,
     spEDM,
     tEDM
