@@ -22,3 +22,7 @@ Imports:
     sdsfun,
     sf,
     terra
+Suggests: 
+    Rcpp,
+    spEDM,
+    tEDM
