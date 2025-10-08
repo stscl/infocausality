@@ -10,6 +10,18 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// RcppGenLatticeLagUni
+Rcpp::NumericVector RcppGenLatticeLagUni(const Rcpp::NumericVector& vec, const Rcpp::List& nb, int lagNum);
+RcppExport SEXP _infocausality_RcppGenLatticeLagUni(SEXP vecSEXP, SEXP nbSEXP, SEXP lagNumSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type vec(vecSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type nb(nbSEXP);
+    Rcpp::traits::input_parameter< int >::type lagNum(lagNumSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppGenLatticeLagUni(vec, nb, lagNum));
+    return rcpp_result_gen;
+END_RCPP
+}
 // RcppGenLatticeLagMulti
 Rcpp::NumericMatrix RcppGenLatticeLagMulti(const Rcpp::NumericMatrix& vecs, const Rcpp::List& nb, int lagNum);
 RcppExport SEXP _infocausality_RcppGenLatticeLagMulti(SEXP vecsSEXP, SEXP nbSEXP, SEXP lagNumSEXP) {
@@ -58,6 +70,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_infocausality_RcppGenLatticeLagUni", (DL_FUNC) &_infocausality_RcppGenLatticeLagUni, 3},
     {"_infocausality_RcppGenLatticeLagMulti", (DL_FUNC) &_infocausality_RcppGenLatticeLagMulti, 3},
     {"_infocausality_RcppGenGridLagUni", (DL_FUNC) &_infocausality_RcppGenGridLagUni, 2},
     {"_infocausality_RcppGenGridLagMulti", (DL_FUNC) &_infocausality_RcppGenGridLagMulti, 3},
