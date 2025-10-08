@@ -95,7 +95,7 @@ class InfoCausality:
         max_combs: Optional[int] = None,
         n_jobs: int = 1,
         backend: str = "loky",
-    ) -> Tuple[Dict, Dict, Dict, float]:
+    ) -> Dict:
         """
         Compute unified SURD decomposition, optionally with parallelization.
 
@@ -111,14 +111,14 @@ class InfoCausality:
 
         Returns
         -------
-        I_R : dict
-            Redundancy / unique information for each combination.
-        I_S : dict
-            Synergy information for each combination.
-        MI : dict
-            Mutual information for each combination.
-        info_leak : float
-            Information leak ratio Hc/H.
+        dict
+            {
+                "synergistic": { "X1-X2": value, ... },
+                "unique": { "X1": value, "X2": value, ... },
+                "redundant": { "X1-X2": value, ... },
+                "mutual_info": { "X1-X2": value, ... },
+                "info_leak": float
+            }
         """
         p = self.p
         H = self.entropy_nvars(p, (0,))
@@ -194,5 +194,45 @@ class InfoCausality:
                         red_vars.remove(ll[0])
                 else:
                     I_S[tuple(ll)] += info
+                    
+        # =========================================================
+        # Format names: X1, X2, X1-X2-X3
+        # =========================================================
+        varnames = [f"X{i}" for i in range(1, self.Ntot)]
+        def combo_name(tup):
+            return "-".join(varnames[i - 1] for i in tup)
 
-        return I_R, I_S, MI, info_leak
+        # ======== Convert keys to readable names ========
+        I_R_named = {combo_name(k): v for k, v in I_R.items()}
+        I_S_named = {combo_name(k): v for k, v in I_S.items()}
+        MI_named  = {combo_name(k): v for k, v in MI.items()}
+
+        # ======== Split redundant / unique ========
+        unique_named = {k: v for k, v in I_R_named.items() if "-" not in k}
+        redundant_named = {k: v for k, v in I_R_named.items() if "-" in k}
+
+        # ======== Normalize for printing ========
+        max_mi = max(MI_named.values()) if MI_named else 1.0
+        norm = lambda d: {k: v / max_mi for k, v in d.items()}
+
+        print("\nSURD Decomposition Results:")
+        print("  Redundant (R):")
+        for k_, v_ in norm(redundant_named).items():
+            print(f"    {k_:15s}: {v_:6.4f}")
+        print("  Unique (U):")
+        for k_, v_ in norm(unique_named).items():
+            print(f"    {k_:15s}: {v_:6.4f}")
+        print("  Synergistic (S):")
+        for k_, v_ in norm(I_S_named).items():
+            print(f"    {k_:15s}: {v_:6.4f}")
+        print(f"  Information Leak: {info_leak * 100:6.2f}%\n")
+
+        # ======== Return friendly structured dict ========
+        result = {
+            "synergistic": I_S_named,
+            "unique": unique_named,
+            "redundant": redundant_named,
+            "mutual_info": MI_named,
+            "info_leak": info_leak,
+        }
+        return result
