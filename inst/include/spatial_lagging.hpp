@@ -1,9 +1,16 @@
 #include <vector>
+#include <numeric>
 #include <cmath>
 #include <limits>
-#include <numeric>
+#include <algorithm>
 #include <unordered_set>
 
+/**
+ * @namespace SpatialLagging
+ * @brief This namespace contains functions for computing lagged values and neighbors
+ *        for lattice and grid structures. It encapsulates related functionalities
+ *        to avoid naming conflicts.
+ */
 namespace SpatialLagging {
 
 /**
@@ -193,7 +200,7 @@ std::vector<std::vector<double>> CppLaggedVal4Lattice(const std::vector<double>&
  * Returns:
  *   A vector where each element represents the lagged mean value for the corresponding spatial unit.
  */
-std::vector<double> GenLatticeLag(
+std::vector<double> GenLatticeLagUni(
     const std::vector<double>& vec,
     const std::vector<std::vector<int>>& nb,
     int lagNum
@@ -225,6 +232,119 @@ std::vector<double> GenLatticeLag(
   }
 
   return laggedMeans;
+}
+
+/**
+ * Computes lagged mean values for multiple variables in lattice structures.
+ * This function processes a matrix of spatial variables and computes lagged means
+ * for each variable using neighbor relationships up to a specified lag number.
+ *
+ * The function leverages existing infrastructure for single-variable lag computation
+ * and efficiently applies it to multiple variables with minimal overhead.
+ *
+ * Parameters:
+ *   mat     - Input matrix where each row represents a spatial variable (vector of doubles).
+ *   nb      - Immediate neighbor indices for lattice elements (2D vector).
+ *   lagNum  - Non-negative integer specifying the lag order.
+ *
+ * Returns:
+ *   A matrix where each row contains lagged mean values for the corresponding input variable.
+ */
+std::vector<std::vector<double>> GenLatticeLagMulti(
+    const std::vector<std::vector<double>>& mat,
+    const std::vector<std::vector<int>>& nb,
+    int lagNum) {
+
+  // Early return for invalid inputs
+  if (mat.empty() || lagNum < 0) {
+    return {};
+  }
+
+  const size_t numVars = mat.size();
+  const size_t numUnits = mat[0].size();
+
+  // // Validate input matrix consistency
+  // for (size_t i = 1; i < numVars; ++i) {
+  //   if (mat[i].size() != numUnits) {
+  //     return {}; // Inconsistent spatial unit counts
+  //   }
+  // }
+
+  // Precompute lagged neighbors once for efficiency
+  std::vector<std::vector<int>> laggedNeighbors;
+  if (lagNum > 0) {
+    laggedNeighbors = CppLaggedNeighbor4Lattice(nb, lagNum);
+
+    // Remove duplicates from previous lag levels if needed
+    if (lagNum > 0) {
+      std::vector<std::vector<int>> prevLaggedResults = CppLaggedNeighbor4Lattice(nb, lagNum - 1);
+      for (size_t i = 0; i < laggedNeighbors.size(); ++i) {
+        std::unordered_set<int> prevSet(prevLaggedResults[i].begin(), prevLaggedResults[i].end());
+        std::vector<int> newIndices;
+
+        for (int index : laggedNeighbors[i]) {
+          if (prevSet.find(index) == prevSet.end()) {
+            newIndices.push_back(index);
+          }
+        }
+
+        if (newIndices.empty()) {
+          newIndices.push_back(std::numeric_limits<int>::min());
+        }
+
+        laggedNeighbors[i] = newIndices;
+      }
+    }
+  }
+
+  // Initialize result matrix
+  std::vector<std::vector<double>> result(numVars, std::vector<double>(numUnits));
+
+  // Process each variable in parallel (if needed) or sequentially
+  for (size_t varIdx = 0; varIdx < numVars; ++varIdx) {
+    const std::vector<double>& currentVar = mat[varIdx];
+
+    // Handle lagNum = 0 case efficiently
+    if (lagNum == 0) {
+      for (size_t unitIdx = 0; unitIdx < numUnits; ++unitIdx) {
+        result[varIdx][unitIdx] = currentVar[unitIdx];
+      }
+      continue;
+    }
+
+    // Compute lagged means for current variable
+    for (size_t unitIdx = 0; unitIdx < numUnits; ++unitIdx) {
+      const std::vector<int>& neighbors = laggedNeighbors[unitIdx];
+      double sum = 0.0;
+      int validCount = 0;
+
+      // Special case: no valid neighbors
+      if (neighbors.size() == 1 && neighbors[0] == std::numeric_limits<int>::min()) {
+        result[varIdx][unitIdx] = std::numeric_limits<double>::quiet_NaN();
+        continue;
+      }
+
+      // Aggregate values from valid neighbors
+      for (int neighborIdx : neighbors) {
+        if (neighborIdx >= 0 && neighborIdx < static_cast<int>(numUnits)) {
+          double value = currentVar[neighborIdx];
+          if (!std::isnan(value)) {
+            sum += value;
+            ++validCount;
+          }
+        }
+      }
+
+      // Compute mean or set to NaN if no valid neighbors
+      if (validCount > 0) {
+        result[varIdx][unitIdx] = sum / validCount;
+      } else {
+        result[varIdx][unitIdx] = std::numeric_limits<double>::quiet_NaN();
+      }
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -315,7 +435,7 @@ std::vector<std::vector<double>> CppLaggedVal4Grid(
  * Returns:
  *   A vector (flattened grid) where each element represents the lagged mean value for the corresponding grid cell.
  */
-std::vector<double> GenGridLag(
+std::vector<double> GenGridLagUni(
     const std::vector<std::vector<double>>& mat,
     int lagNum
 ) {
@@ -346,6 +466,48 @@ std::vector<double> GenGridLag(
   }
 
   return laggedMeans;
+}
+
+/**
+ * Computes lagged mean values for multiple grid variables using Moore neighborhood (queen's case).
+ * This function processes a 3D array of grid data where each element represents a separate grid variable,
+ * and computes lagged means for all variables at the specified lag order simultaneously.
+ *
+ *
+ * Parameters:
+ *   arr     - 3D vector input where arr[varIndex] is a 2D grid matrix (same as GenGridLagUni input).
+ *   lagNum  - Non-negative integer specifying the lag distance in Moore neighborhood.
+ *
+ * Returns:
+ *   A 2D vector where result[varIndex] contains flattened lagged mean values for the corresponding
+ *   input variable, arranged in row-major order (consistent with GenGridLagUni output format).
+ *
+ * Note:
+ *   - All input grids must have identical dimensions
+ *   - NaN values in input data are ignored during mean calculation
+ *   - Returns empty vector if inputs are invalid or dimensions mismatch
+ */
+std::vector<std::vector<double>> GenGridLagMulti(
+    const std::vector<std::vector<std::vector<double>>>& arr,
+    int lagNum) {
+
+  // Validate input parameters
+  if (arr.empty() || lagNum < 0) {
+    return {};
+  }
+
+  // Reserve space for results: one row per subset
+  std::vector<std::vector<double>> results;
+  results.reserve(arr.size());
+
+  // Compute lagged means for each subset independently
+  for (const auto& mat : arr) {
+    // Each mat is a 2D grid; GenGridLagUni returns a 1D vector of length = rows*cols
+    std::vector<double> subsetLagMeans = GenGridLagUni(mat, lagNum);
+    results.emplace_back(std::move(subsetLagMeans));
+  }
+
+  return results;
 }
 
 } // namespace SpatialLagging
