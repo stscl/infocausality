@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 RcppGenLatticeLag <- function(vec, nb, lagNum) {
-    .Call('_infocausality_RcppGenLatticeLag', PACKAGE = 'infocausality', vec, nb, lagNum)
+    .Call(`_infocausality_RcppGenLatticeLag`, vec, nb, lagNum)
 }
 
 RcppGenGridLag <- function(mat, lagNum) {
-    .Call('_infocausality_RcppGenGridLag', PACKAGE = 'infocausality', mat, lagNum)
+    .Call(`_infocausality_RcppGenGridLag`, mat, lagNum)
 }
 

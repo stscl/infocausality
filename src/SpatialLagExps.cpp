@@ -1,7 +1,6 @@
 #include <Rcpp.h>
 #include <spatial_lagging.hpp>
 
-
 /**
  * Rcpp wrapper for computing the mean of lagged values for a lattice structure at a specified lag number.
  *
