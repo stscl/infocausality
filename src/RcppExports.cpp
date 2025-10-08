@@ -45,11 +45,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppGenTSLagMulti
+Rcpp::NumericMatrix RcppGenTSLagMulti(const Rcpp::NumericMatrix& mat, int lagNum);
+RcppExport SEXP _infocausality_RcppGenTSLagMulti(SEXP matSEXP, SEXP lagNumSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< int >::type lagNum(lagNumSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppGenTSLagMulti(mat, lagNum));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_infocausality_RcppGenLatticeLagMulti", (DL_FUNC) &_infocausality_RcppGenLatticeLagMulti, 3},
     {"_infocausality_RcppGenGridLagUni", (DL_FUNC) &_infocausality_RcppGenGridLagUni, 2},
     {"_infocausality_RcppGenGridLagMulti", (DL_FUNC) &_infocausality_RcppGenGridLagMulti, 3},
+    {"_infocausality_RcppGenTSLagMulti", (DL_FUNC) &_infocausality_RcppGenTSLagMulti, 2},
     {NULL, NULL, 0}
 };
 
