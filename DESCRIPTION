@@ -24,14 +24,11 @@ Imports:
     sf,
     terra
 Suggests: 
-    dplyr,
     gdverse,
     ggplot2,
     knitr,
-    patchwork,
     Rcpp,
     rmarkdown,
     spEDM,
-    tEDM,
-    tibble
+    tEDM
 VignetteBuilder: knitr
