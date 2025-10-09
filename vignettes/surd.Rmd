@@ -156,7 +156,7 @@ fig_cvds_ts
 
 To investigate the causal influences of air pollutants on the incidence of cardiovascular diseases, we performed SURD analysis using a time lag step `3` and `10` discretization bins.
 
-```{r surd_cvd}
+```{r surd_cvds}
 res_cvds = infocausality::surd(cvd, "cvd",
                                c("rsp", "no2", "so2", "o3"),
                                lag = 3, bin = 10, cores = 6)
@@ -164,8 +164,42 @@ res_cvds = infocausality::surd(cvd, "cvd",
 
 The SURD results are shown in the figure below:
 
-```{r fig_surd_cvds,fig.width=10,fig.height=3,fig.dpi=100,fig.cap=knitr::asis_output("**Figure 2**. SURD decomposition results between different air pollutants and cardiovascular diseases.")}
+```{r fig_surd_cvds,fig.width=10,fig.height=3,fig.dpi=300,fig.cap=knitr::asis_output("**Figure 2**. SURD decomposition results between different air pollutants and cardiovascular diseases.")}
 utils_plot_surd(res_cvds)
+```
+
+## Population Density and Its Drivers in Mainland China
+
+```{r load_popd_data}
+popd_nb = spdep::read.gal(system.file("case/popd_nb.gal",package = "spEDM"))
+popd = readr::read_csv(system.file("case/popd.csv",package = "spEDM"))
+popd_sf = sf::st_as_sf(popd, coords = c("lon","lat"), crs = 4326)
+popd_sf
+```
+
+```{r surd_popd}
+res_popd = infocausality::surd(popd_sf,"popd",c("elev","tem","pre","slope"),
+                               lag = 3, bin = 10, nb = popd_nb, cores = 6)
+```
+
+```{r fig_surd_popd,fig.width=10,fig.height=3,fig.dpi=300,fig.cap=knitr::asis_output("**Figure 3**. SURD decomposition results between population density and its Drivers.")}
+utils_plot_surd(res_popd)
+```
+
+## Influence of Climatic and Topographic Factors on Net Primary Productivity (NPP) in Mainland China
+
+```{r load_npp_data}
+npp = terra::rast(system.file("case/npp.tif", package = "spEDM"))
+npp
+```
+
+```{r surd_npp}
+res_npp = infocausality::surd(npp,"npp",c("pre","tem","elev","hfp"),
+                              lag = 3, bin = 10, cores = 6)
+```
+
+```{r fig_surd_npp,fig.width=10,fig.height=3,fig.dpi=300,fig.cap=knitr::asis_output("**Figure 4**. SURD decomposition results between climatic and topographic factors and npp.")}
+utils_plot_surd(res_npp)
 ```
 
 🧩 *See also*:
