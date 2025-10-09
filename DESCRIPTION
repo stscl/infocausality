@@ -25,6 +25,9 @@ Imports:
     terra
 Suggests: 
     gdverse,
+    knitr,
     Rcpp,
+    rmarkdown,
     spEDM,
     tEDM
+VignetteBuilder: knitr
