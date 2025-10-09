@@ -25,7 +25,7 @@
   utils_run_surd(obs, bin, max.combs, cores)
 }
 
-#' Decomposing causality into its synergistic,unique,and redundant components
+#' synergistic-unique-redundant decomposition of causality
 #'
 #' @param data observation data.
 #' @param target name of the target variable.

@@ -5,7 +5,7 @@
 \alias{surd,data.frame-method}
 \alias{surd,sf-method}
 \alias{surd,SpatRaster-method}
-\title{Decomposing causality into its synergistic,unique,and redundant components}
+\title{synergistic-unique-redundant decomposition of causality}
 \usage{
 \S4method{surd}{data.frame}(
   data,
@@ -71,7 +71,7 @@ A list.
 }
 }
 \description{
-Decomposing causality into its synergistic,unique,and redundant components
+synergistic-unique-redundant decomposition of causality
 }
 \examples{
 columbus = sf::read_sf(system.file("case/columbus.gpkg", package="spEDM"))
