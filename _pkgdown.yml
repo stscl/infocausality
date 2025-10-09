@@ -14,7 +14,7 @@ navbar:
       text: Vignettes
       menu:
       - text: Synergistic-Unique-Redundant Decomposition of Causality
-        href: articles/SURD.html
+        href: articles/surd.html
 
 home:
   title: |
