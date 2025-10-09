@@ -130,50 +130,42 @@ utils_plot_surd = \(surd_list,threshold = 0){
 
 The following sections demonstrate SURD decomposition in different contexts, illustrating its flexibility across temporal and spatial causal analyses.
 
-## Case 1 — Temporal SURD Analysis (tEDM: CVDs)
+## Air Pollution and Cardiovascular Health in Hong Kong
 
-* **Goal**: Analyze causal interactions among cardiovascular variables over time.
-* **Input**: Multivariate time-series (e.g., heart rate, blood pressure, respiration).
-* **Process**:
-
-  * Compute information flow among variables;
-  * Apply SURD decomposition;
-  * Visualize results via `utils_plot_surd()`.
-
-```{r eval = FALSE}
-# Example pseudo-code
-library(infocausality)
-
-surd_cvd <- infocausality::causality_surd(data = cvd_ts, method = "tedm")
-utils_plot_surd(surd_cvd)
+```{r load_cvd_data}
+cvd = readr::read_csv(system.file("case/cvd.csv",package = "tEDM"))
+head(cvd)
 ```
 
-## Case 2 — Spatial SURD Analysis (spEDM: Population Density)
+```{r fig_cvds_ts,fig.width=6.5,fig.height=3.75,fig.dpi=100,fig.cap=knitr::asis_output("**Figure 1**. Time series of air pollutants and confirmed CVD cases in Hong Kong from March 1995 to November 1997.")}
+cvd_long = cvd |>
+  tibble::rowid_to_column("id") |>
+  tidyr::pivot_longer(cols = -id,
+                      names_to = "variable", values_to = "value")
 
-* **Goal**: Discover causal relationships among spatial population density fields.
-* **Input**: Raster stack or `SpatRaster` of population density across regions.
-* **Process**:
-
-  * Estimate spatial information flow between grids;
-  * Decompose total information into U–S–R components.
-
-```{r eval = FALSE}
-pop_surd <- infocausality::causality_surd(popdensity_raster, method = "spedm")
-utils_plot_surd(pop_surd)
+fig_cvds_ts = ggplot2::ggplot(cvd_long, ggplot2::aes(x = id, y = value, color = variable)) +
+  ggplot2::geom_line(linewidth = 0.5) +
+  ggplot2::labs(x = "Days (from 1995-3 to 1997-11)", y = "Concentrations or \nNO. of CVD admissions", color = "") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.direction = "horizontal",
+                 legend.position = "inside",
+                 legend.justification = c("center","top"),
+                 legend.background = ggplot2::element_rect(fill = "transparent", color = NA))
+fig_cvds_ts
 ```
 
-## Case 3 — Spatial SURD Analysis (spEDM: NPP)
+To investigate the causal influences of air pollutants on the incidence of cardiovascular diseases, we performed SURD analysis using a time lag step `3` and `10` discretization bins.
 
-* **Goal**: Explore causal drivers of Net Primary Productivity (NPP) variations.
-* **Input**: Raster stack of NPP and potential environmental covariates.
-* **Process**:
+```{r surd_cvd}
+res_cvds = infocausality::surd(cvd, "cvd",
+                               c("rsp", "no2", "so2", "o3"),
+                               lag = 3, bin = 10, cores = 6)
+```
 
-  * Apply SURD to evaluate redundancy and synergy among climatic drivers;
-  * Visualize decomposition structure.
+The SURD results are shown in the figure below:
 
-```{r eval = FALSE}
-npp_surd <- infocausality::causality_surd(npp_raster, method = "spedm")
-utils_plot_surd(npp_surd)
+```{r fig_surd_cvds,fig.width=10,fig.height=3,fig.dpi=100,fig.cap=knitr::asis_output("**Figure 2**. SURD decomposition results between different air pollutants and cardiovascular diseases.")}
+utils_plot_surd(res_cvds)
 ```
 
 🧩 *See also*:
