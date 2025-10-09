@@ -1,4 +1,24 @@
 url: https://stscl.github.io/infocausality/
 template:
   bootstrap: 5
+  math-rendering: mathjax
+  light-switch: true
 
+navbar:
+  structure:
+    right:  [search, github]
+    left: [reference, articles, news]
+  bg: custom
+  components:
+    articles:
+      text: Vignettes
+      menu:
+      - text: Synergistic-Unique-Redundant Decomposition of Causality
+        href: articles/SURD.html
+
+home:
+  title: |
+    infocausality | Information-Theoretic Measure of Causality
+authors:
+  Wenbo Lv:
+    href: https://spatlyu.github.io/
