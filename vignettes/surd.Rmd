@@ -1,5 +1,8 @@
 ---
 title: "Synergistic-Unique-Redundant Decomposition of Causality (SURD)"
+date: |
+  | Last update: 2025-10-10
+  | Last run: `r Sys.Date()`
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{surd}
@@ -16,7 +19,23 @@ knitr::opts_chunk$set(
 )
 ```
 
-```
+# Introduction
+
+Understanding how causal influences combine and interact is essential for both temporal and spatial systems. The **Synergistic–Unique–Redundant Decomposition (SURD)** framework provides a principled way to break down total information flow between variables into:
+
+* **Unique** contributions — information uniquely provided by one driver;
+* **Redundant** contributions — information shared by multiple drivers;
+* **Synergistic** contributions — information only revealed when drivers are considered together.
+
+This vignette demonstrates how to perform SURD analysis using the `infocausality` package. We will explore both temporal and spatial cases, showing how `infocausality` unifies **time-series** and **spatial cross-sectional** causal analysis via consistent interfaces to `data.frame`, `sf`, and `SpatRaster` objects.
+
+# Utility Functions
+
+To simplify post-processing and visualization, two helper functions are provided below.
+
+`utils_process_surd_result()` converts a `surd_list` object (as returned by an SURD computation routine) into a tidy `tibble` for plotting and further analysis.
+
+```{r}
 utils_process_surd_result = \(surd_list,threshold = 0){
   I_unique = surd_list$unique
   I_synergistic = surd_list$synergistic
@@ -43,7 +62,11 @@ utils_process_surd_result = \(surd_list,threshold = 0){
   }
   return(df)
 }
+```
 
+`utils_plot_surd()` produces a SURD decomposition plot — a grouped bar chart of **unique (U)**, **synergistic (S)**, and **redundant (R)** components, along with a side panel showing the **information leak**.
+
+```{r}
 utils_plot_surd = \(surd_list,threshold = 0){
   I_unique = surd_list$unique
   I_synergistic = surd_list$synergistic
@@ -102,3 +125,60 @@ utils_plot_surd = \(surd_list,threshold = 0){
   patchwork::wrap_plots(p1, p2, ncol = 2, widths = c(10,1))
 }
 ```
+
+# Example Cases
+
+The following sections demonstrate SURD decomposition in different contexts, illustrating its flexibility across temporal and spatial causal analyses.
+
+## Case 1 — Temporal SURD Analysis (tEDM: CVDs)
+
+* **Goal**: Analyze causal interactions among cardiovascular variables over time.
+* **Input**: Multivariate time-series (e.g., heart rate, blood pressure, respiration).
+* **Process**:
+
+  * Compute information flow among variables;
+  * Apply SURD decomposition;
+  * Visualize results via `utils_plot_surd()`.
+
+```{r eval = FALSE}
+# Example pseudo-code
+library(infocausality)
+
+surd_cvd <- infocausality::causality_surd(data = cvd_ts, method = "tedm")
+utils_plot_surd(surd_cvd)
+```
+
+## Case 2 — Spatial SURD Analysis (spEDM: Population Density)
+
+* **Goal**: Discover causal relationships among spatial population density fields.
+* **Input**: Raster stack or `SpatRaster` of population density across regions.
+* **Process**:
+
+  * Estimate spatial information flow between grids;
+  * Decompose total information into U–S–R components.
+
+```{r eval = FALSE}
+pop_surd <- infocausality::causality_surd(popdensity_raster, method = "spedm")
+utils_plot_surd(pop_surd)
+```
+
+## Case 3 — Spatial SURD Analysis (spEDM: NPP)
+
+* **Goal**: Explore causal drivers of Net Primary Productivity (NPP) variations.
+* **Input**: Raster stack of NPP and potential environmental covariates.
+* **Process**:
+
+  * Apply SURD to evaluate redundancy and synergy among climatic drivers;
+  * Visualize decomposition structure.
+
+```{r eval = FALSE}
+npp_surd <- infocausality::causality_surd(npp_raster, method = "spedm")
+utils_plot_surd(npp_surd)
+```
+
+🧩 *See also*:
+
+* `?infocausality::surd()` for function details.
+* [`spEDM`](https://cran.r-project.org/package=spEDM) package for spatial empirical dynamic modeling.
+* [`tEDM`](https://cran.r-project.org/package=tEDM) package for temporal empirical dynamic modeling.
+
