@@ -1,6 +1,6 @@
 Package: infocausality
 Title: Information-Theoretic Measure of Causality
-Version: 0.0.0.9000
+Version: 1.0
 Authors@R: 
     person(given = "Wenbo", family = "Lv",
            email = "lyu.geosocial@gmail.com", 

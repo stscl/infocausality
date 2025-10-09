@@ -1,5 +1,5 @@
-# infocausality (development version)
+# infocausality 1.0
 
 ### new
 
-* First stable release.
+* Implement `surd` generic for synergistic-unique-redundant decomposition of causality (#13).
