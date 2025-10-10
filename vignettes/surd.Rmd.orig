@@ -202,9 +202,10 @@ res_npp = infocausality::surd(npp,"npp",c("pre","tem","elev","hfp"),
 utils_plot_surd(res_npp)
 ```
 
+---
+
 🧩 *See also*:
 
-* `?infocausality::surd()` for function details.
+* [`?infocausality::surd()`](https://stscl.github.io/infocausality/reference/surd.html) for function details.
 * [`spEDM`](https://cran.r-project.org/package=spEDM) package for spatial empirical dynamic modeling.
 * [`tEDM`](https://cran.r-project.org/package=tEDM) package for temporal empirical dynamic modeling.
-
