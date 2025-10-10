@@ -18,7 +18,7 @@ namespace SpatialLagging {
  * This function recursively expands the neighbors at each lag step, starting with direct neighbors
  * (lag 0), and including neighbors from previous lags, until reaching the specified lag number.
  *
- * For lagNum = 0, each spatial unit is its own neighbor.
+ * For lagNum = 0, each spatial unit's neighbor is itself.
  * For lagNum >= 1, the function accumulates neighbors from all previous lags and deduplicates the results.
  * Empty results are filled with `std::numeric_limits<int>::min()` to indicate no neighbors.
  *
