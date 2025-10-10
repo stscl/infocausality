@@ -218,25 +218,25 @@ Rcpp::NumericVector RcppGenGridLagUni(const Rcpp::NumericMatrix& mat,
 }
 
 /**
- * @title Rcpp wrapper for multi-variable grid lag computation (Moore neighborhood)
+ * @title Rcpp wrapper for multi-variable grid lag computation with variable lag distances
  *
  * @description
  * This function provides an Rcpp interface to the C++ function `GenGridLagMulti()`,
  * which computes lagged mean values for multiple 2D grid variables using the Moore neighborhood
- * (also known as queen's case). Each column in the input matrix represents one spatial variable,
+ * (also known as queen’s case). Each column in the input matrix represents a separate spatial variable,
  * stored in row-major (flattened) order.
  *
- * The function reconstructs each variable’s 2D grid from the flattened column vectors,
- * computes lagged mean values for all variables simultaneously, and returns the results
- * as a numeric matrix with the same structure as the input.
+ * Unlike the single-lag version, this function allows specifying a distinct lag distance for
+ * each variable via the `lagNums` parameter.
  *
- * @param mat Numeric matrix where each column represents a spatial variable,
+ * @param mat Numeric matrix where each column represents one spatial variable,
  *            stored in row-major flattened order (each row corresponds to one grid cell).
+ * @param lagNums Integer vector specifying the lag distance for each variable (column of `mat`).
+ *                Must be the same length as the number of columns in `mat`.
  * @param nrow Integer specifying the number of rows in each 2D grid.
  *             The number of columns in the grid is inferred from `mat.nrow() / nrow`.
- * @param lagNum Integer specifying the lag distance in the Moore neighborhood (non-negative).
  *
- * @return Numeric matrix of the same dimensions as `mat`, where each column represents
+ * @return Numeric matrix of the same dimensions as `mat`, where each column contains
  *         the lagged mean values for the corresponding input variable.
  *         NaN values are returned for cells without valid neighbors.
  *
@@ -245,21 +245,18 @@ Rcpp::NumericVector RcppGenGridLagUni(const Rcpp::NumericMatrix& mat,
  * # Example usage in R:
  * nrow <- 3
  * mat <- matrix(c(1:9, 9:1), ncol = 2)
- * lagNum <- 1
- * result <- RcppGenGridLagMulti(mat, nrow, lagNum)
+ * lagNums <- c(1, 2)  # variable 1 uses lag=1, variable 2 uses lag=2
+ * result <- RcppGenGridLagMulti(mat, lagNums, nrow)
  * print(result)
  * }
  */
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericMatrix RcppGenGridLagMulti(const Rcpp::NumericMatrix& mat,
-                                        int nrow,
-                                        int lagNum = 1) {
+                                        const Rcpp::IntegerVector& lagNums,
+                                        int nrow) {
   // --- Validate inputs ---
   if (mat.nrow() == 0 || mat.ncol() == 0) {
     Rcpp::stop("Input matrix 'mat' must not be empty.");
-  }
-  if (lagNum < 0) {
-    Rcpp::stop("Parameter 'lagNum' must be non-negative.");
   }
   if (nrow <= 0) {
     Rcpp::stop("Parameter 'nrow' must be positive.");
@@ -268,9 +265,13 @@ Rcpp::NumericMatrix RcppGenGridLagMulti(const Rcpp::NumericMatrix& mat,
   const int n_cells = mat.nrow();
   const int n_vars = mat.ncol();
 
-  // Derive the number of columns in each grid
+  if (lagNums.size() != n_vars) {
+    Rcpp::stop("Length of 'lagNums' must match the number of columns in 'mat'.");
+  }
+
+  // Derive number of columns per grid
   if (n_cells % nrow != 0) {
-    Rcpp::stop("nrow does not evenly divide the number of rows in 'mat'.");
+    Rcpp::stop("Parameter 'nrow' does not evenly divide the number of rows in 'mat'.");
   }
   const int ncol = n_cells / nrow;
 
@@ -284,24 +285,25 @@ Rcpp::NumericMatrix RcppGenGridLagMulti(const Rcpp::NumericMatrix& mat,
 
     for (int i = 0; i < nrow; ++i) {
       for (int j = 0; j < ncol; ++j) {
-        // row-major reconstruction
+        // Reconstruct row-major 2D grid
         grid[i][j] = col_data[i * ncol + j];
       }
     }
-
     cpp_arr.emplace_back(std::move(grid));
   }
 
+  // --- Convert lagNums (Rcpp) → std::vector<int> ---
+  std::vector<int> cpp_lagNums(lagNums.begin(), lagNums.end());
+
   // --- Call core computation function ---
-  std::vector<std::vector<double>> result_cpp =
-    SpatialLagging::GenGridLagMulti(cpp_arr, lagNum);
+  std::vector<std::vector<double>> result_cpp = SpatialLagging::GenGridLagMulti(cpp_arr, cpp_lagNums);
 
   // --- Validate output size ---
   if (result_cpp.size() != static_cast<size_t>(n_vars)) {
     Rcpp::stop("Mismatch between input and output variable counts.");
   }
 
-  // --- Convert back to Rcpp::NumericMatrix ---
+  // --- Convert C++ result back to Rcpp::NumericMatrix ---
   Rcpp::NumericMatrix result(n_cells, n_vars);
 
   for (int v = 0; v < n_vars; ++v) {

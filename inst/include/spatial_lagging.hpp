@@ -629,7 +629,7 @@ std::vector<double> GenGridLagUni(
  *   - NaN values in input data are ignored during mean calculation
  *   - Returns empty vector if inputs are invalid or dimensions mismatch
  */
-std::vector<std::vector<double>> GenGridLagMulti(
+std::vector<std::vector<double>> GenGridLagMultiSingle(
     const std::vector<std::vector<std::vector<double>>>& arr,
     int lagNum) {
 
@@ -647,6 +647,85 @@ std::vector<std::vector<double>> GenGridLagMulti(
     // Each mat is a 2D grid; GenGridLagUni returns a 1D vector of length = rows*cols
     std::vector<double> subsetLagMeans = GenGridLagUni(mat, lagNum);
     results.emplace_back(std::move(subsetLagMeans));
+  }
+
+  return results;
+}
+
+/**
+ * @title Multi-grid lagged mean computation with variable lag orders
+ *
+ * @description
+ * Computes lagged mean values for multiple grid variables (2D matrices) using
+ * the Moore neighborhood (queen’s case), allowing each variable to have a distinct lag order.
+ *
+ * Each grid is processed independently using its specified lag order.
+ * For each grid cell, neighbors exactly `lagNum` steps away (in all 8 directions)
+ * are averaged to compute the lagged mean. NaN values are ignored in mean calculation.
+ *
+ * @param arr
+ *   A 3D vector representing multiple grid variables.
+ *   - arr[v] is a 2D vector (rows × cols) of spatial observations for variable v.
+ *   - All grids must have the same dimensions.
+ *
+ * @param lagNums
+ *   A vector of integers specifying the lag order for each variable.
+ *   - Must be the same length as `arr`.
+ *   - Each lag value must be non-negative.
+ *
+ * @return
+ *   A 2D vector where `result[v]` contains flattened lagged mean values
+ *   for the v-th grid variable (in row-major order).
+ *   - If inputs are invalid or inconsistent, returns an empty vector.
+ *   - If all neighbor values for a cell are NaN, the output for that cell is NaN.
+ *
+ * @note
+ *   - Each grid uses its own lag order (flexible lag specification).
+ *   - This function generalizes `GenGridLagMultiSingle()` to support per-variable lag orders.
+ *   - All grids must be rectangular and share identical dimensions.
+ */
+std::vector<std::vector<double>> GenGridLagMulti(
+    const std::vector<std::vector<std::vector<double>>>& arr,
+    const std::vector<int>& lagNums
+) {
+  // --- Validate inputs ---
+  if (arr.empty()) {
+    return {};
+  }
+  if (arr.size() != lagNums.size()) {
+    return {};
+  }
+
+  // // --- Validate grid dimensions ---
+  // const int rows = arr[0].size();
+  // const int cols = arr[0].empty() ? 0 : arr[0][0].size();
+  // if (rows == 0 || cols == 0) {
+  //   return {};
+  // }
+  //
+  // for (size_t v = 1; v < arr.size(); ++v) {
+  //   if (arr[v].size() != static_cast<size_t>(rows) ||
+  //       (rows > 0 && arr[v][0].size() != static_cast<size_t>(cols))) {
+  //     // Inconsistent grid dimensions across variables
+  //     return {};
+  //   }
+  // }
+
+  // --- Compute lagged means per variable ---
+  std::vector<std::vector<double>> results;
+  results.reserve(arr.size());
+
+  for (size_t v = 0; v < arr.size(); ++v) {
+    int lag = lagNums[v];
+    if (lag < 0) {
+      // Invalid lag, append empty vector
+      results.emplace_back();
+      continue;
+    }
+
+    // Compute lagged means for this variable
+    std::vector<double> laggedMeans = GenGridLagUni(arr[v], lag);
+    results.emplace_back(std::move(laggedMeans));
   }
 
   return results;
