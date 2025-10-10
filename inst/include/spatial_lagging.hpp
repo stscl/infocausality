@@ -4,6 +4,7 @@
 #include <limits>
 #include <algorithm>
 #include <unordered_set>
+#include <unordered_map>
 
 /**
  * @namespace SpatialLagging
@@ -250,7 +251,7 @@ std::vector<double> GenLatticeLagUni(
  * Returns:
  *   A matrix where each row contains lagged mean values for the corresponding input variable.
  */
-std::vector<std::vector<double>> GenLatticeLagMulti(
+std::vector<std::vector<double>> GenLatticeLagMultiSingle(
     const std::vector<std::vector<double>>& mat,
     const std::vector<std::vector<int>>& nb,
     int lagNum) {
@@ -341,6 +342,147 @@ std::vector<std::vector<double>> GenLatticeLagMulti(
       } else {
         result[varIdx][unitIdx] = std::numeric_limits<double>::quiet_NaN();
       }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Computes lagged mean values for multiple spatial variables on a lattice structure,
+ * where each variable can have its own distinct lag order.
+ *
+ * This function generalizes the GenLatticeLagMultiSingle by accepting a vector
+ * of lag orders (lagNums), enabling per-variable lag computation. It ensures
+ * computational efficiency by only computing neighbor sets for the unique lag values
+ * present in lagNums, and their immediate lower levels (lagNum - 1), to derive
+ * "pure" (non-overlapping) neighbor sets for each lag order.
+ *
+ * Core idea:
+ *   1. Identify all unique lag levels from lagNums.
+ *   2. For each unique lag, compute its neighbors using CppLaggedNeighbor4Lattice,
+ *      as well as those for (lag - 1) if needed.
+ *   3. Subtract (lag - 1) neighbors from lag neighbors to form pure lag neighbors.
+ *   4. For each variable, retrieve the corresponding pure neighbor set for its lagNum
+ *      and compute the mean of its neighbors' values.
+ *
+ * Parameters:
+ *   mat      - Input matrix where each row represents a spatial variable
+ *              and each column represents a spatial unit.
+ *   nb       - A 2D vector of immediate neighbors for each spatial unit.
+ *   lagNums  - A vector of lag orders corresponding to each variable in mat.
+ *
+ * Returns:
+ *   A matrix (same shape as mat) where each row contains the lagged mean values
+ *   for the corresponding variable. Missing or invalid results are filled with NaN.
+ */
+std::vector<std::vector<double>> GenLatticeLagMulti(
+    const std::vector<std::vector<double>>& mat,
+    const std::vector<std::vector<int>>& nb,
+    const std::vector<int>& lagNums) {
+
+  // ==== Input validation ====
+  if (mat.empty() || lagNums.empty() || mat.size() != lagNums.size()) {
+    return {};
+  }
+
+  const size_t numVars = mat.size();
+  const size_t numUnits = mat[0].size();
+
+  // ==== Identify unique lag values (only those present in lagNums) ====
+  std::unordered_set<int> uniqueLagsSet;
+  for (int lag : lagNums) {
+    if (lag >= 0) uniqueLagsSet.insert(lag);
+  }
+  std::vector<int> uniqueLags(uniqueLagsSet.begin(), uniqueLagsSet.end());
+  std::sort(uniqueLags.begin(), uniqueLags.end());
+
+  // ==== Precompute required neighbor sets (lag and lag-1 for each unique lag) ====
+  std::unordered_map<int, std::vector<std::vector<int>>> laggedNeighborMap;
+  for (int lag : uniqueLags) {
+    // Compute lagNum neighbors
+    laggedNeighborMap[lag] = CppLaggedNeighbor4Lattice(nb, lag);
+
+    // Compute lagNum - 1 neighbors if needed and not already computed
+    if (lag > 0 && laggedNeighborMap.find(lag - 1) == laggedNeighborMap.end()) {
+      laggedNeighborMap[lag - 1] = CppLaggedNeighbor4Lattice(nb, lag - 1);
+    }
+  }
+
+  // ==== Derive pure neighbor sets only for lag values appearing in lagNums ====
+  std::unordered_map<int, std::vector<std::vector<int>>> pureLagNeighborMap;
+
+  for (int lag : uniqueLags) {
+    if (lag == 0) {
+      // Lag 0 → the unit itself
+      pureLagNeighborMap[lag] = laggedNeighborMap[lag];
+      continue;
+    }
+
+    const auto& curr = laggedNeighborMap[lag];
+    const auto& prev = laggedNeighborMap[lag - 1];
+    std::vector<std::vector<int>> pure(curr.size());
+
+    for (size_t i = 0; i < curr.size(); ++i) {
+      std::unordered_set<int> prevSet(prev[i].begin(), prev[i].end());
+      std::vector<int> diff;
+
+      for (int idx : curr[i]) {
+        if (prevSet.find(idx) == prevSet.end()) {
+          diff.push_back(idx);
+        }
+      }
+
+      if (diff.empty()) {
+        diff.push_back(std::numeric_limits<int>::min());
+      }
+      pure[i] = diff;
+    }
+
+    pureLagNeighborMap[lag] = pure;
+  }
+
+  // ==== Compute lagged mean values for each variable ====
+  std::vector<std::vector<double>> result(numVars, std::vector<double>(numUnits));
+
+  for (size_t varIdx = 0; varIdx < numVars; ++varIdx) {
+    const std::vector<double>& values = mat[varIdx];
+    int lag = lagNums[varIdx];
+
+    // Handle invalid lag
+    if (lag < 0) {
+      std::fill(result[varIdx].begin(), result[varIdx].end(),
+                std::numeric_limits<double>::quiet_NaN());
+      continue;
+    }
+
+    const auto& lagNeighbors = pureLagNeighborMap[lag];
+
+    for (size_t unitIdx = 0; unitIdx < numUnits; ++unitIdx) {
+      const std::vector<int>& neighbors = lagNeighbors[unitIdx];
+
+      // If no valid neighbors, set NaN
+      if (neighbors.size() == 1 && neighbors[0] == std::numeric_limits<int>::min()) {
+        result[varIdx][unitIdx] = std::numeric_limits<double>::quiet_NaN();
+        continue;
+      }
+
+      double sum = 0.0;
+      int validCount = 0;
+
+      for (int nbIdx : neighbors) {
+        if (nbIdx >= 0 && nbIdx < static_cast<int>(numUnits)) {
+          double val = values[nbIdx];
+          if (!std::isnan(val)) {
+            sum += val;
+            ++validCount;
+          }
+        }
+      }
+
+      result[varIdx][unitIdx] = (validCount > 0)
+        ? (sum / validCount)
+        : std::numeric_limits<double>::quiet_NaN();
     }
   }
 

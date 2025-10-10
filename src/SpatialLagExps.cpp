@@ -147,7 +147,7 @@ Rcpp::NumericMatrix RcppGenLatticeLagMulti(const Rcpp::NumericMatrix& vecs,
 
   // --- Call the core C++ computation function ---
   std::vector<std::vector<double>> result_cpp =
-    SpatialLagging::GenLatticeLagMulti(cpp_vecs, cpp_nb, lagNum);
+    SpatialLagging::GenLatticeLagMultiSingle(cpp_vecs, cpp_nb, lagNum);
 
   // --- Validate output size ---
   if (result_cpp.empty()) {
