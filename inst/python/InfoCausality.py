@@ -3,7 +3,6 @@ from itertools import combinations as icmb
 from typing import Tuple, Dict, Optional
 from joblib import Parallel, delayed
 
-
 class InfoCausality:
     """
     InfoCausality Class for Information-Theoretic Causality Analysis.
