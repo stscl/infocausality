@@ -46,14 +46,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // RcppGenGridLagMulti
-Rcpp::NumericMatrix RcppGenGridLagMulti(const Rcpp::NumericMatrix& mat, int nrow, int lagNum);
-RcppExport SEXP _infocausality_RcppGenGridLagMulti(SEXP matSEXP, SEXP nrowSEXP, SEXP lagNumSEXP) {
+Rcpp::NumericMatrix RcppGenGridLagMulti(const Rcpp::NumericMatrix& mat, const Rcpp::IntegerVector& lagNums, int nrow);
+RcppExport SEXP _infocausality_RcppGenGridLagMulti(SEXP matSEXP, SEXP lagNumsSEXP, SEXP nrowSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type lagNums(lagNumsSEXP);
     Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
-    Rcpp::traits::input_parameter< int >::type lagNum(lagNumSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppGenGridLagMulti(mat, nrow, lagNum));
+    rcpp_result_gen = Rcpp::wrap(RcppGenGridLagMulti(mat, lagNums, nrow));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -13,8 +13,8 @@ RcppGenGridLagUni <- function(mat, lagNum = 1L) {
     .Call(`_infocausality_RcppGenGridLagUni`, mat, lagNum)
 }
 
-RcppGenGridLagMulti <- function(mat, nrow, lagNum = 1L) {
-    .Call(`_infocausality_RcppGenGridLagMulti`, mat, nrow, lagNum)
+RcppGenGridLagMulti <- function(mat, lagNums, nrow) {
+    .Call(`_infocausality_RcppGenGridLagMulti`, mat, lagNums, nrow)
 }
 
 RcppGenTSLagMulti <- function(mat, lagNum = 1L) {
