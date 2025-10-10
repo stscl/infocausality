@@ -54,6 +54,7 @@ utils_process_surd_result = \(surd_list,threshold = 0){
   if(threshold > 0){
     df = dplyr::filter(df, value > threshold)
   }
+  df$info_leak = info_leak
   return(df)
 }
 ```
