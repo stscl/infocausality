@@ -54,8 +54,9 @@
 #'
 #' @examples
 #' columbus = sf::read_sf(system.file("case/columbus.gpkg", package="spEDM"))
+#' \donttest{
 #' surd(columbus,"hoval",c("inc","crime"))
-#'
+#' }
 methods::setMethod("surd", "data.frame", .surd_ts)
 
 #' @rdname surd
