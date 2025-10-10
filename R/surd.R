@@ -12,7 +12,7 @@
   obs = cbind(
     data[,target,drop = TRUE],
     RcppGenLatticeLagMulti(as.matrix(data[,agents,drop = FALSE]),
-                           nb, rep(lag,length.out = length(agents)))
+                           nb,rep(lag,length.out = length(agents)))
     )
   utils_run_surd(obs, bin, max.combs, cores)
 }
