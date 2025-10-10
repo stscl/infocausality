@@ -19,7 +19,7 @@ LinkingTo:
     Rcpp
 Imports: 
     methods,
-    reticulate,
+    reticulate (>= 1.41.0),
     sdsfun,
     sf,
     terra
