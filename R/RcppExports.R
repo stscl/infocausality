@@ -5,16 +5,16 @@ RcppGenLatticeLagUni <- function(vec, nb, lagNum = 1L) {
     .Call(`_infocausality_RcppGenLatticeLagUni`, vec, nb, lagNum)
 }
 
-RcppGenLatticeLagMulti <- function(vecs, nb, lagNum = 1L) {
-    .Call(`_infocausality_RcppGenLatticeLagMulti`, vecs, nb, lagNum)
+RcppGenLatticeLagMulti <- function(vecs, nb, lagNums) {
+    .Call(`_infocausality_RcppGenLatticeLagMulti`, vecs, nb, lagNums)
 }
 
 RcppGenGridLagUni <- function(mat, lagNum = 1L) {
     .Call(`_infocausality_RcppGenGridLagUni`, mat, lagNum)
 }
 
-RcppGenGridLagMulti <- function(mat, nrow, lagNum = 1L) {
-    .Call(`_infocausality_RcppGenGridLagMulti`, mat, nrow, lagNum)
+RcppGenGridLagMulti <- function(mat, lagNums, nrow) {
+    .Call(`_infocausality_RcppGenGridLagMulti`, mat, lagNums, nrow)
 }
 
 RcppGenTSLagMulti <- function(mat, lagNum = 1L) {

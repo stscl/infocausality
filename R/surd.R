@@ -11,7 +11,8 @@
   data = sf::st_drop_geometry(data)
   obs = cbind(
     data[,target,drop = TRUE],
-    RcppGenLatticeLagMulti(as.matrix(data[,agents,drop = FALSE]),nb,lag)
+    RcppGenLatticeLagMulti(as.matrix(data[,agents,drop = FALSE]),
+                           nb,rep(lag,length.out = length(agents)))
     )
   utils_run_surd(obs, bin, max.combs, cores)
 }
@@ -20,7 +21,7 @@
   obs = cbind(
     terra::values(data[[target]],mat = TRUE,na.rm = FALSE),
     RcppGenGridLagMulti(terra::values(data[[agents]],mat = TRUE,na.rm = FALSE),
-                        terra::nrow(data), lag)
+                        rep(lag,length.out = length(agents)),terra::nrow(data))
     )
   utils_run_surd(obs, bin, max.combs, cores)
 }
