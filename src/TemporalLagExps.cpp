@@ -42,6 +42,14 @@ Rcpp::NumericMatrix RcppGenTSLagMultiSingle(const Rcpp::NumericMatrix& mat,
   int nrow = mat.nrow();
   int ncol = mat.ncol();
 
+  // --- Validate inputs ---
+  if (nrow == 0 || ncol == 0) {
+    Rcpp::stop("Input matrix 'mat' must not be empty.");
+  }
+  if (lagNum < 0) {
+    Rcpp::stop("lagNum must be non-negative.");
+  }
+
   // Initialize result matrix with NaN
   Rcpp::NumericMatrix lagged(nrow, ncol);
   double nan = std::numeric_limits<double>::quiet_NaN();
