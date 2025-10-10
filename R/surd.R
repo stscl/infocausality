@@ -1,7 +1,8 @@
 .surd_ts = \(data, target, agents, lag = 1, bin = 5, max.combs = NULL, cores = 1, backend = "threading"){
   obs = cbind(
     data[,target,drop = TRUE],
-    RcppGenTSLagMulti(as.matrix(data[,agents,drop = FALSE]),lag)
+    RcppGenTSLagMulti(as.matrix(data[,agents,drop = FALSE]),
+                      rep(lag,length.out = length(agents)))
     )
   utils_run_surd(obs, bin, max.combs, cores)
 }
