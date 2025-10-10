@@ -54,6 +54,7 @@ utils_process_surd_result = \(surd_list,threshold = 0){
   if(threshold > 0){
     df = dplyr::filter(df, value > threshold)
   }
+  df$info_leak = info_leak
   return(df)
 }
 ```
@@ -171,18 +172,6 @@ res_cvds = infocausality::surd(cvd, "cvd",
                                lag = 3, bin = 10, cores = 6)
 ## 
 ## SURD Decomposition Results:
-##   Redundant (R):
-##     X1-X2          : 0.0101
-##     X1-X3          : 0.0020
-##     X1-X4          : 0.0000
-##     X2-X3          : 0.0000
-##     X2-X4          : 0.0029
-##     X3-X4          : 0.0000
-##     X1-X2-X3       : 0.0015
-##     X1-X2-X4       : 0.0088
-##     X1-X3-X4       : 0.0010
-##     X2-X3-X4       : 0.0001
-##     X1-X2-X3-X4    : 0.0291
 ##   Unique (U):
 ##     X1             : 0.0018
 ##     X2             : 0.0167
@@ -200,6 +189,18 @@ res_cvds = infocausality::surd(cvd, "cvd",
 ##     X1-X3-X4       : 0.0536
 ##     X2-X3-X4       : 0.1394
 ##     X1-X2-X3-X4    : 0.3974
+##   Redundant (R):
+##     X1-X2          : 0.0101
+##     X1-X3          : 0.0020
+##     X1-X4          : 0.0000
+##     X2-X3          : 0.0000
+##     X2-X4          : 0.0029
+##     X3-X4          : 0.0000
+##     X1-X2-X3       : 0.0015
+##     X1-X2-X4       : 0.0088
+##     X1-X3-X4       : 0.0010
+##     X2-X3-X4       : 0.0001
+##     X1-X2-X3-X4    : 0.0291
 ##   Information Leak:  56.67%
 ```
 
@@ -249,18 +250,6 @@ res_popd = infocausality::surd(popd_sf,"popd",c("elev","tem","pre","slope"),
                                lag = 3, bin = 10, nb = popd_nb, cores = 6)
 ## 
 ## SURD Decomposition Results:
-##   Redundant (R):
-##     X1-X2          : 0.0000
-##     X1-X3          : 0.0089
-##     X1-X4          : 0.0000
-##     X2-X3          : 0.0130
-##     X2-X4          : 0.0027
-##     X3-X4          : 0.0138
-##     X1-X2-X3       : 0.0056
-##     X1-X2-X4       : 0.0000
-##     X1-X3-X4       : 0.0120
-##     X2-X3-X4       : 0.0110
-##     X1-X2-X3-X4    : 0.0897
 ##   Unique (U):
 ##     X1             : 0.0046
 ##     X2             : 0.0000
@@ -278,6 +267,18 @@ res_popd = infocausality::surd(popd_sf,"popd",c("elev","tem","pre","slope"),
 ##     X1-X3-X4       : 0.0463
 ##     X2-X3-X4       : 0.1577
 ##     X1-X2-X3-X4    : 0.1095
+##   Redundant (R):
+##     X1-X2          : 0.0000
+##     X1-X3          : 0.0089
+##     X1-X4          : 0.0000
+##     X2-X3          : 0.0130
+##     X2-X4          : 0.0027
+##     X3-X4          : 0.0138
+##     X1-X2-X3       : 0.0056
+##     X1-X2-X4       : 0.0000
+##     X1-X3-X4       : 0.0120
+##     X2-X3-X4       : 0.0110
+##     X1-X2-X3-X4    : 0.0897
 ##   Information Leak:  64.64%
 ```
 
@@ -311,18 +312,6 @@ res_npp = infocausality::surd(npp,"npp",c("pre","tem","elev","hfp"),
                               lag = 3, bin = 10, cores = 6)
 ## 
 ## SURD Decomposition Results:
-##   Redundant (R):
-##     X1-X2          : 0.2704
-##     X1-X3          : 0.0015
-##     X1-X4          : 0.0000
-##     X2-X3          : 0.0000
-##     X2-X4          : 0.0000
-##     X3-X4          : 0.0000
-##     X1-X2-X3       : 0.0470
-##     X1-X2-X4       : 0.0000
-##     X1-X3-X4       : 0.0053
-##     X2-X3-X4       : 0.0000
-##     X1-X2-X3-X4    : 0.0960
 ##   Unique (U):
 ##     X1             : 0.2028
 ##     X2             : 0.0009
@@ -340,6 +329,18 @@ res_npp = infocausality::surd(npp,"npp",c("pre","tem","elev","hfp"),
 ##     X1-X3-X4       : 0.0476
 ##     X2-X3-X4       : 0.0200
 ##     X1-X2-X3-X4    : 0.0756
+##   Redundant (R):
+##     X1-X2          : 0.2704
+##     X1-X3          : 0.0015
+##     X1-X4          : 0.0000
+##     X2-X3          : 0.0000
+##     X2-X4          : 0.0000
+##     X3-X4          : 0.0000
+##     X1-X2-X3       : 0.0470
+##     X1-X2-X4       : 0.0000
+##     X1-X3-X4       : 0.0053
+##     X2-X3-X4       : 0.0000
+##     X1-X2-X3-X4    : 0.0960
 ##   Information Leak:  41.30%
 ```
 
@@ -350,9 +351,10 @@ utils_plot_surd(res_npp)
 
 ![**Figure 4**. SURD decomposition results between climatic and topographic factors and npp.](../man/figures/surd/fig_surd_npp-1.png)
 
+---
+
 🧩 *See also*:
 
-* `?infocausality::surd()` for function details.
+* [`?infocausality::surd()`](https://stscl.github.io/infocausality/reference/surd.html) for function details.
 * [`spEDM`](https://cran.r-project.org/package=spEDM) package for spatial empirical dynamic modeling.
 * [`tEDM`](https://cran.r-project.org/package=tEDM) package for temporal empirical dynamic modeling.
-
