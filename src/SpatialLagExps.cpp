@@ -71,25 +71,28 @@ Rcpp::NumericVector RcppGenLatticeLagUni(const Rcpp::NumericVector& vec,
 }
 
 /**
- * @title Rcpp wrapper for multi-variable lattice lag computation
+ * @title Rcpp wrapper for flexible multi-variable lattice lag computation
  *
  * @description
  * This function provides an Rcpp interface to the C++ function `GenLatticeLagMulti()`,
- * which computes lagged mean values for multiple spatial variables defined on the same lattice structure.
- * Each column in the input matrix is treated as a separate variable.
+ * which computes lagged mean values for multiple spatial variables on a common lattice structure.
+ * Each column in the input matrix represents one spatial variable, and each row represents a spatial unit.
  *
- * For each variable, the function computes lagged means based on the specified neighborhood structure
- * and lag order (number of steps away in the adjacency graph).
+ * Unlike the simpler version, this function supports *distinct lag orders* per variable.
+ * The parameter `lagNums` allows specifying a custom lag order for each column in `vecs`.
+ * Internally, the function converts R objects into efficient C++ containers,
+ * calls `GenLatticeLagMulti()` for computation, and converts the results back to an R matrix.
  *
- * @param vecs Numeric matrix where each column represents one spatial variable.
- *             Rows correspond to spatial units (must match the neighborhood size).
+ * @param vecs Numeric matrix where each column represents one spatial variable
+ *             and each row corresponds to a spatial unit.
  * @param nb List of integer vectors representing the neighborhood structure.
- *           Each element contains indices (1-based in R) of immediate neighbors for each spatial unit.
- * @param lagNum Integer specifying the lag order (non-negative).
+ *           Each element contains 1-based indices of immediate neighbors for each spatial unit.
+ * @param lagNums Integer vector specifying the lag order for each variable (column of `vecs`).
+ *                Must be the same length as the number of columns in `vecs`.
  *
- * @return Numeric matrix where each column corresponds to the lagged mean values
- *         for the respective input variable. The dimensions match the input `vecs`.
- *         If all neighbor values are invalid (NaN) for a unit, the result is NaN.
+ * @return Numeric matrix of the same dimension as `vecs`, where each column contains
+ *         the lagged mean values for the corresponding variable. If a spatial unit has
+ *         no valid neighbors at the specified lag, its value is `NaN`.
  *
  * @examples
  * \dontrun{
@@ -97,23 +100,24 @@ Rcpp::NumericVector RcppGenLatticeLagUni(const Rcpp::NumericVector& vec,
  * vecs <- matrix(c(1,2,3,4,5,
  *                  2,3,4,5,6), ncol = 2)
  * nb <- list(c(2,3), c(1,4), c(1,5), c(2), c(3))
- * result <- RcppGenLatticeLagMulti(vecs, nb, 1)
+ * lagNums <- c(1, 2)  # Variable 1 uses lag=1, variable 2 uses lag=2
+ * result <- RcppGenLatticeLagMulti(vecs, nb, lagNums)
  * print(result)
  * }
  */
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericMatrix RcppGenLatticeLagMulti(const Rcpp::NumericMatrix& vecs,
                                            const Rcpp::List& nb,
-                                           int lagNum = 1) {
+                                           const Rcpp::IntegerVector& lagNums) {
   // --- Validate inputs ---
   if (vecs.nrow() == 0 || vecs.ncol() == 0) {
     Rcpp::stop("Input matrix 'vecs' must not be empty.");
   }
-  if (lagNum < 0) {
-    Rcpp::stop("Parameter 'lagNum' must be non-negative.");
+  if (lagNums.size() != vecs.ncol()) {
+    Rcpp::stop("Length of 'lagNums' must match the number of columns in 'vecs'.");
   }
 
-  // --- Convert nb from R list to std::vector<std::vector<int>> ---
+  // --- Convert neighborhood list (R) → C++ vector of vectors ---
   int n_units = nb.size();
   std::vector<std::vector<int>> cpp_nb(n_units);
 
@@ -126,11 +130,10 @@ Rcpp::NumericMatrix RcppGenLatticeLagMulti(const Rcpp::NumericMatrix& vecs,
       // Convert from 1-based (R) to 0-based (C++)
       neighbors.push_back(current_nb[j] - 1);
     }
-
     cpp_nb[i] = std::move(neighbors);
   }
 
-  // --- Convert each column of vecs into std::vector<double> ---
+  // --- Convert matrix columns (Rcpp) → vector of vectors (C++) ---
   int n_rows = vecs.nrow();
   int n_cols = vecs.ncol();
 
@@ -145,22 +148,25 @@ Rcpp::NumericMatrix RcppGenLatticeLagMulti(const Rcpp::NumericMatrix& vecs,
     cpp_vecs.emplace_back(std::move(col));
   }
 
-  // --- Call the core C++ computation function ---
-  std::vector<std::vector<double>> result_cpp =
-    SpatialLagging::GenLatticeLagMultiSingle(cpp_vecs, cpp_nb, lagNum);
+  // --- Convert lagNums (Rcpp) → std::vector<int> ---
+  std::vector<int> cpp_lagNums(lagNums.begin(), lagNums.end());
 
-  // --- Validate output size ---
+  // --- Call the core computation function ---
+  std::vector<std::vector<double>> result_cpp = SpatialLagging::GenLatticeLagMulti(cpp_vecs, cpp_nb, cpp_lagNums);
+
+  // --- Validate output ---
   if (result_cpp.empty()) {
     Rcpp::stop("Computation returned empty result.");
   }
 
-  // --- Convert back to Rcpp::NumericMatrix ---
+  if (result_cpp.size() != static_cast<size_t>(n_cols)) {
+    Rcpp::stop("Result dimension mismatch between input and output.");
+  }
+
+  // --- Convert C++ result back to Rcpp matrix ---
   Rcpp::NumericMatrix result(n_rows, n_cols);
 
   for (int j = 0; j < n_cols; ++j) {
-    if (j >= static_cast<int>(result_cpp.size())) {
-      Rcpp::stop("Result dimension mismatch between input and output.");
-    }
     const auto& col = result_cpp[j];
     if (static_cast<int>(col.size()) != n_rows) {
       Rcpp::stop("Output column length mismatch for variable %d.", j + 1);
