@@ -100,8 +100,7 @@ Rcpp::NumericMatrix RcppGenTSLagMultiSingle(const Rcpp::NumericMatrix& mat,
  * #      [,1] [,2] [,3]
  * # [1,]  NaN  NaN  NaN
  * # [2,]    1  NaN  NaN
- * # [3,]    2    1  NaN
- * # [4,]    3    2    1
+ * # [3,]    2    4  NaN
  * }
  */
 // [[Rcpp::export(rng = false)]]
