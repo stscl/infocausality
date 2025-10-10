@@ -216,14 +216,14 @@ class InfoCausality:
         norm = lambda d: {k: v / max_mi for k, v in d.items()}
 
         print("\nSURD Decomposition Results:")
-        print("  Redundant (R):")
-        for k_, v_ in norm(redundant_named).items():
-            print(f"    {k_:15s}: {v_:6.4f}")
         print("  Unique (U):")
         for k_, v_ in norm(unique_named).items():
             print(f"    {k_:15s}: {v_:6.4f}")
         print("  Synergistic (S):")
         for k_, v_ in norm(I_S_named).items():
+            print(f"    {k_:15s}: {v_:6.4f}")
+        print("  Redundant (R):")
+        for k_, v_ in norm(redundant_named).items():
             print(f"    {k_:15s}: {v_:6.4f}")
         print(f"  Information Leak: {info_leak * 100:6.2f}%\n")
 
