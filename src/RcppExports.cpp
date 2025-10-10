@@ -23,14 +23,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // RcppGenLatticeLagMulti
-Rcpp::NumericMatrix RcppGenLatticeLagMulti(const Rcpp::NumericMatrix& vecs, const Rcpp::List& nb, int lagNum);
-RcppExport SEXP _infocausality_RcppGenLatticeLagMulti(SEXP vecsSEXP, SEXP nbSEXP, SEXP lagNumSEXP) {
+Rcpp::NumericMatrix RcppGenLatticeLagMulti(const Rcpp::NumericMatrix& vecs, const Rcpp::List& nb, const Rcpp::IntegerVector& lagNums);
+RcppExport SEXP _infocausality_RcppGenLatticeLagMulti(SEXP vecsSEXP, SEXP nbSEXP, SEXP lagNumsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type vecs(vecsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List& >::type nb(nbSEXP);
-    Rcpp::traits::input_parameter< int >::type lagNum(lagNumSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppGenLatticeLagMulti(vecs, nb, lagNum));
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type lagNums(lagNumsSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppGenLatticeLagMulti(vecs, nb, lagNums));
     return rcpp_result_gen;
 END_RCPP
 }
