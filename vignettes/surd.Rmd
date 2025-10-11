@@ -2,7 +2,7 @@
 title: "Synergistic-Unique-Redundant Decomposition of Causality (SURD)"
 date: |
   | Last update: 2025-10-10
-  | Last run: 2025-10-10
+  | Last run: 2025-10-12
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{surd}
