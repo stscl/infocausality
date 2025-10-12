@@ -140,8 +140,8 @@ class InfoCausality:
         -------
         dict
             {
-                "synergistic": { "X1-X2": value, ... },
                 "unique": { "X1": value, "X2": value, ... },
+                "synergistic": { "X1-X2": value, ... },
                 "redundant": { "X1-X2": value, ... },
                 "mutual_info": { "X1-X2": value, ... },
                 "info_leak": float
@@ -256,8 +256,8 @@ class InfoCausality:
 
         # ======== Return friendly structured dict ========
         result = {
-            "synergistic": I_S_named,
             "unique": unique_named,
+            "synergistic": I_S_named,
             "redundant": redundant_named,
             "mutual_info": MI_named,
             "info_leak": info_leak,
