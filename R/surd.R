@@ -53,8 +53,8 @@
 #'
 #' @return A list.
 #' \describe{
-#'   \item{synergistic}{Synergistic information components by agent combinations.}
 #'   \item{unique}{Unique information contributions per variable.}
+#'   \item{synergistic}{Synergistic information components by agent combinations.}
 #'   \item{redundant}{Redundant information shared by agent subsets.}
 #'   \item{mutual_info}{Mutual information measures for each combination.}
 #'   \item{info_leak}{Information leak ratio.}
