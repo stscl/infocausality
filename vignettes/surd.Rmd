@@ -54,8 +54,8 @@ utils_process_surd_result = \(surd_list,threshold = 0){
   if(threshold > 0){
     df = dplyr::filter(df, value > threshold)
   }
-  df$info_leak = info_leak
-  return(df)
+  return(dplyr::bind_rows(df,tibble::tribble(~label,~value,~type,
+                                             "Info Leak", info_leak, "info leak")))
 }
 ```
 
@@ -88,7 +88,7 @@ utils_plot_surd = \(surd_list,threshold = 0){
   }
   df$label = factor(df$label, levels = df$label)
 
-  colors = c(unique = "#d62828", synergistic = "#f77f00", redundant = "#003049")
+  colors = c(unique = "#ec9e9e", synergistic = "#fac58c", redundant = "#668392")
 
   p1 = ggplot2::ggplot(df, ggplot2::aes(x = label, y = value, fill = type)) +
     ggplot2::geom_col(color = "black", linewidth = 0.15, show.legend = FALSE) +
@@ -107,7 +107,7 @@ utils_plot_surd = \(surd_list,threshold = 0){
 
   df_leak = tibble::tibble(label = "Info Leak", value = surd_list$info_leak)
   p2 = ggplot2::ggplot(df_leak, ggplot2::aes(x = label, y = value)) +
-    ggplot2::geom_col(fill = "gray", color = "black", linewidth = 0.15) +
+    ggplot2::geom_col(fill = "#7f7f7f", color = "black", linewidth = 0.15) +
     ggplot2::scale_x_discrete(name = NULL, expand = c(0, 0)) +
     ggplot2::scale_y_continuous(name = NULL, limits = c(0, 1), expand = c(0, 0),
                                 breaks = c(0,1), labels = c(0,1) ) +
