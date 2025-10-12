@@ -1,3 +1,6 @@
+#ifndef SPATIAL_LAGGING_HPP
+#define SPATIAL_LAGGING_HPP
+
 #include <vector>
 #include <numeric>
 #include <cmath>
@@ -732,3 +735,5 @@ std::vector<std::vector<double>> GenGridLagMulti(
 }
 
 } // namespace SpatialLagging
+
+#endif // SPATIAL_LAGGING_HPP
