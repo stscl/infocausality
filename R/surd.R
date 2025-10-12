@@ -1,30 +1,42 @@
 .surd_ts = \(data, target, agents, lag = 1, bin = 5, max.combs = NULL, cores = 1, backend = "threading"){
-  obs = cbind(
-    data[,target,drop = TRUE],
-    RcppGenTSLagMulti(as.matrix(data[,agents,drop = FALSE]),
-                      rep(lag,length.out = length(agents)))
+  if (is.null(bin) || bin <= 0) {
+    pfm = RcppDiscMat2PFM(as.matrix(data[,c(target, agents),drop = FALSE]))
+  } else {
+    pfm = cbind(
+      data[,target,drop = TRUE],
+      RcppGenTSLagMulti(as.matrix(data[,agents,drop = FALSE]),
+                        rep(lag,length.out = length(agents)))
     )
-  utils_run_surd(obs, bin, max.combs, cores)
+  }
+  utils_run_surd(pfm, bin, max.combs, cores)
 }
 
 .surd_lattice = \(data, target, agents, lag = 1, bin = 5, max.combs = NULL, cores = 1, backend = "threading", nb = NULL){
   if (is.null(nb)) nb = sdsfun::spdep_nb(data)
   data = sf::st_drop_geometry(data)
-  obs = cbind(
-    data[,target,drop = TRUE],
-    RcppGenLatticeLagMulti(as.matrix(data[,agents,drop = FALSE]),
-                           nb,rep(lag,length.out = length(agents)))
+  if (is.null(bin) || bin <= 0) {
+    pfm = RcppDiscMat2PFM(as.matrix(data[,c(target, agents),drop = FALSE]))
+  } else {
+    pfm = cbind(
+      data[,target,drop = TRUE],
+      RcppGenLatticeLagMulti(as.matrix(data[,agents,drop = FALSE]),
+                             nb,rep(lag,length.out = length(agents)))
     )
-  utils_run_surd(obs, bin, max.combs, cores)
+  }
+  utils_run_surd(pfm, bin, max.combs, cores)
 }
 
 .surd_grid = \(data, target, agents, lag = 1, bin = 5, max.combs = NULL, cores = 1, backend = "threading"){
-  obs = cbind(
-    terra::values(data[[target]],mat = TRUE,na.rm = FALSE),
-    RcppGenGridLagMulti(terra::values(data[[agents]],mat = TRUE,na.rm = FALSE),
-                        rep(lag,length.out = length(agents)),terra::nrow(data))
+  if (is.null(bin) || bin <= 0) {
+    pfm = RcppDiscMat2PFM(terra::values(data[[c(target, agents)]],mat = TRUE,na.rm = FALSE))
+  } else {
+    pfm = cbind(
+      terra::values(data[[target]],mat = TRUE,na.rm = FALSE),
+      RcppGenGridLagMulti(terra::values(data[[agents]],mat = TRUE,na.rm = FALSE),
+                          rep(lag,length.out = length(agents)),terra::nrow(data))
     )
-  utils_run_surd(obs, bin, max.combs, cores)
+  }
+  utils_run_surd(pfm, bin, max.combs, cores)
 }
 
 #' synergistic-unique-redundant decomposition of causality
