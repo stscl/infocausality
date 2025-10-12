@@ -14,20 +14,39 @@ class InfoCausality:
         - SURD decomposition (Synergy, Unique, Redundancy)
     """
 
-    def __init__(self, x: np.ndarray, nbins: int = 8):
+    def __init__(self, x: np.ndarray, nbins: Optional[int] = 8):
         """
-        Initialize InfoCausality Class from raw target-agents original-lagged data.
+        Initialize InfoCausality Class.
+
+        This class supports two initialization modes:
+        ---------------------------------------------------
+        1. **Raw numeric mode (nbins > 0)**:
+            The input `x` is continuous or discrete numeric data.
+            The method will automatically discretize it into a
+            probability frequency matrix (PFM) using `np.histogramdd`.
+
+        2. **Precomputed PFM mode (nbins <= 0 or None)**:
+            The input `x` is already an n-dimensional joint probability
+            matrix (PFM), such as one created by `RcppDiscMat2PFM` from R.
+            In this case, the matrix is used directly without modification.
 
         Parameters
         ----------
         x : np.ndarray
-            2D array where:
-                - First column is the target variable (future)
-                - Remaining columns are agent (predictor) variables.
-        nbins : int
-            Number of bins (states) per variable dimension for discretization.
+            - If nbins > 0: 2D array (samples × variables)
+              where the first column is the target (future variable)
+              and the remaining columns are agents (predictors).
+            - If nbins <= 0 or None: n-dimensional joint probability
+              frequency matrix already normalized to sum ≈ 1.
+        nbins : int or None, optional
+            Number of bins for discretization. If <= 0 or None, x is
+            assumed to be a precomputed probability matrix.
         """
-        self.p = self.create_pfm(x, nbins)
+        if nbins is None or nbins <= 0:
+            self.p = x
+        else:
+            self.p = self.create_pfm(x, nbins)
+
         self.Ntot = self.p.ndim
         self.Nvars = self.Ntot - 1
         self.Nt = self.p.shape[0]
