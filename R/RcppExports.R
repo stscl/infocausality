@@ -25,3 +25,7 @@ RcppGenTSLagMulti <- function(mat, lagNums) {
     .Call(`_infocausality_RcppGenTSLagMulti`, mat, lagNums)
 }
 
+RcppDiscMat2PFM <- function(x, eps = 1e-14) {
+    .Call(`_infocausality_RcppDiscMat2PFM`, x, eps)
+}
+

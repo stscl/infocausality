@@ -79,6 +79,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppDiscMat2PFM
+Rcpp::NumericVector RcppDiscMat2PFM(const Rcpp::NumericMatrix& x, double eps);
+RcppExport SEXP _infocausality_RcppDiscMat2PFM(SEXP xSEXP, SEXP epsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppDiscMat2PFM(x, eps));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_infocausality_RcppGenLatticeLagUni", (DL_FUNC) &_infocausality_RcppGenLatticeLagUni, 3},
@@ -87,6 +98,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_infocausality_RcppGenGridLagMulti", (DL_FUNC) &_infocausality_RcppGenGridLagMulti, 3},
     {"_infocausality_RcppGenTSLagMultiSingle", (DL_FUNC) &_infocausality_RcppGenTSLagMultiSingle, 2},
     {"_infocausality_RcppGenTSLagMulti", (DL_FUNC) &_infocausality_RcppGenTSLagMulti, 2},
+    {"_infocausality_RcppDiscMat2PFM", (DL_FUNC) &_infocausality_RcppDiscMat2PFM, 2},
     {NULL, NULL, 0}
 };
 
