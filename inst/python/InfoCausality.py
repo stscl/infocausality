@@ -50,7 +50,10 @@ class InfoCausality:
         self.Ntot = self.p.ndim
         self.Nvars = self.Ntot - 1
         self.Nt = self.p.shape[0]
-
+    
+    # =====================================================
+    # PFM construction from raw numeric data
+    # =====================================================
     @staticmethod
     def create_pfm(x: np.ndarray, nbins: int) -> np.ndarray:
         x = x[~np.isnan(x).any(axis=1)]
@@ -59,7 +62,10 @@ class InfoCausality:
         hist = np.maximum(hist, 1e-14) #hist += 1e-14 
         hist /= hist.sum()
         return hist
-
+    
+    # =====================================================
+    # Basic information-theoretic primitives
+    # =====================================================
     @staticmethod
     def mylog(x: np.ndarray) -> np.ndarray:
         valid = (x > 0) & np.isfinite(x)
@@ -93,7 +99,10 @@ class InfoCausality:
     def cond_mutual_info(p: np.ndarray, ind1, ind2, ind3) -> float:
         combined = tuple(set(ind2) | set(ind3))
         return InfoCausality.cond_entropy(p, ind1, ind3) - InfoCausality.cond_entropy(p, ind1, combined)
-
+    
+    # =====================================================
+    # Transfer Entropy computation
+    # =====================================================
     def transfer_entropy(self) -> np.ndarray:
         num_vars = self.Nvars
         TE = np.zeros(num_vars)
