@@ -67,9 +67,10 @@
 #' @examples
 #' columbus = sf::read_sf(system.file("case/columbus.gpkg", package="spEDM"))
 #' \donttest{
-#' tryCatch({
-#'   surd(columbus,"hoval",c("inc","crime"))
-#' }, error = \(e) message("Skipping Python-dependent example: ", e$message))
+#' tryCatch(
+#'   surd(columbus, "hoval", c("inc", "crime")),
+#'   error = \(e) message("Skipping Python-dependent example: ", e$message)
+#' )
 #' }
 methods::setMethod("surd", "data.frame", .surd_ts)
 
