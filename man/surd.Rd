@@ -76,6 +76,10 @@ synergistic-unique-redundant decomposition of causality
 \examples{
 columbus = sf::read_sf(system.file("case/columbus.gpkg", package="spEDM"))
 \donttest{
-surd(columbus,"hoval",c("inc","crime"))
+tryCatch({
+  surd(columbus,"hoval",c("inc","crime"))
+}, error = function(e) {
+  message("Skipping Python-dependent example: ", e$message)
+})
 }
 }
