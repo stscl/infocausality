@@ -78,8 +78,6 @@ columbus = sf::read_sf(system.file("case/columbus.gpkg", package="spEDM"))
 \donttest{
 tryCatch({
   surd(columbus,"hoval",c("inc","crime"))
-}, error = function(e) {
-  message("Skipping Python-dependent example: ", e$message)
-})
+}, error = \(e) message("Skipping Python-dependent example: ", e$message))
 }
 }
