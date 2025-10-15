@@ -82,3 +82,6 @@ tryCatch(
 )
 }
 }
+\references{
+Martínez-Sánchez, Á., Arranz, G. & Lozano-Durán, A. Decomposing causality into its synergistic, unique, and redundant components. Nat Commun 15, 9296 (2024).
+}
