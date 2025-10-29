@@ -1,8 +1,8 @@
 ---
 title: "Synergistic-Unique-Redundant Decomposition of Causality (SURD)"
 date: |
-  | Last update: 2025-10-10
-  | Last run: 2025-10-12
+  | Last update: 2025-10-30
+  | Last run: 2025-10-30
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{surd}
@@ -173,39 +173,39 @@ To investigate the causal influences of air pollutants on the incidence of cardi
 ``` r
 res_cvds = infocausality::surd(cvd, "cvd",
                                c("rsp", "no2", "so2", "o3"),
-                               lag = 3, bin = 10, cores = 6)
+                               lag = 15, bin = 10, cores = 6)
 ## 
 ## SURD Decomposition Results:
 ##   Unique (U):
-##     X1             : 0.0018
-##     X2             : 0.0167
-##     X3             : 0.0005
-##     X4             : 0.0005
+##     X1             : 0.0022
+##     X2             : 0.0162
+##     X3             : 0.0024
+##     X4             : 0.0000
 ##   Synergistic (S):
-##     X1-X2          : 0.0232
-##     X1-X3          : 0.0167
-##     X1-X4          : 0.0115
-##     X2-X3          : 0.0169
-##     X2-X4          : 0.0676
-##     X3-X4          : 0.0405
-##     X1-X2-X3       : 0.1263
-##     X1-X2-X4       : 0.0319
-##     X1-X3-X4       : 0.0536
-##     X2-X3-X4       : 0.1394
-##     X1-X2-X3-X4    : 0.3974
+##     X1-X2          : 0.0181
+##     X1-X3          : 0.0198
+##     X1-X4          : 0.0339
+##     X2-X3          : 0.0293
+##     X2-X4          : 0.0332
+##     X3-X4          : 0.0477
+##     X1-X2-X3       : 0.0343
+##     X1-X2-X4       : 0.1084
+##     X1-X3-X4       : 0.1540
+##     X2-X3-X4       : 0.0426
+##     X1-X2-X3-X4    : 0.4093
 ##   Redundant (R):
-##     X1-X2          : 0.0101
-##     X1-X3          : 0.0020
-##     X1-X4          : 0.0000
-##     X2-X3          : 0.0000
-##     X2-X4          : 0.0029
+##     X1-X2          : 0.0034
+##     X1-X3          : 0.0000
+##     X1-X4          : 0.0007
+##     X2-X3          : 0.0006
+##     X2-X4          : 0.0034
 ##     X3-X4          : 0.0000
-##     X1-X2-X3       : 0.0015
-##     X1-X2-X4       : 0.0088
-##     X1-X3-X4       : 0.0010
-##     X2-X3-X4       : 0.0001
-##     X1-X2-X3-X4    : 0.0291
-##   Information Leak:  56.67%
+##     X1-X2-X3       : 0.0050
+##     X1-X2-X4       : 0.0100
+##     X1-X3-X4       : 0.0008
+##     X2-X3-X4       : 0.0014
+##     X1-X2-X3-X4    : 0.0230
+##   Information Leak:  52.82%
 ```
 
 The SURD results are shown in the figure below:
@@ -222,8 +222,8 @@ utils_plot_surd(res_cvds)
 
 ``` r
 popd_nb = spdep::read.gal(system.file("case/popd_nb.gal",package = "spEDM"))
-## Warning in spdep::read.gal(system.file("case/popd_nb.gal", package = "spEDM")): neighbour
-## object has 4 sub-graphs
+## Warning in spdep::read.gal(system.file("case/popd_nb.gal", package = "spEDM")):
+## neighbour object has 4 sub-graphs
 popd = readr::read_csv(system.file("case/popd.csv",package = "spEDM"))
 popd_sf = sf::st_as_sf(popd, coords = c("lon","lat"), crs = 4326)
 popd_sf
@@ -313,39 +313,39 @@ npp
 
 ``` r
 res_npp = infocausality::surd(npp,"npp",c("pre","tem","elev","hfp"),
-                              lag = 3, bin = 10, cores = 6)
+                              lag = 2, bin = 10, cores = 6)
 ## 
 ## SURD Decomposition Results:
 ##   Unique (U):
-##     X1             : 0.2028
-##     X2             : 0.0009
-##     X3             : 0.0000
+##     X1             : 0.2060
+##     X2             : 0.0004
+##     X3             : 0.0001
 ##     X4             : 0.0000
 ##   Synergistic (S):
-##     X1-X2          : 0.0502
-##     X1-X3          : 0.0781
-##     X1-X4          : 0.0305
-##     X2-X3          : 0.0321
-##     X2-X4          : 0.0031
-##     X3-X4          : 0.0009
-##     X1-X2-X3       : 0.0300
-##     X1-X2-X4       : 0.0080
-##     X1-X3-X4       : 0.0476
-##     X2-X3-X4       : 0.0200
-##     X1-X2-X3-X4    : 0.0756
+##     X1-X2          : 0.0477
+##     X1-X3          : 0.0734
+##     X1-X4          : 0.0360
+##     X2-X3          : 0.0268
+##     X2-X4          : 0.0049
+##     X3-X4          : 0.0010
+##     X1-X2-X3       : 0.0363
+##     X1-X2-X4       : 0.0171
+##     X1-X3-X4       : 0.0380
+##     X2-X3-X4       : 0.0201
+##     X1-X2-X3-X4    : 0.0796
 ##   Redundant (R):
-##     X1-X2          : 0.2704
-##     X1-X3          : 0.0015
+##     X1-X2          : 0.2658
+##     X1-X3          : 0.0020
 ##     X1-X4          : 0.0000
 ##     X2-X3          : 0.0000
 ##     X2-X4          : 0.0000
 ##     X3-X4          : 0.0000
-##     X1-X2-X3       : 0.0470
+##     X1-X2-X3       : 0.0439
 ##     X1-X2-X4       : 0.0000
-##     X1-X3-X4       : 0.0053
+##     X1-X3-X4       : 0.0065
 ##     X2-X3-X4       : 0.0000
-##     X1-X2-X3-X4    : 0.0960
-##   Information Leak:  41.30%
+##     X1-X2-X3-X4    : 0.0941
+##   Information Leak:  40.78%
 ```
 
 
