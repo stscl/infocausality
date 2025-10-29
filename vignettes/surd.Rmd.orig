@@ -1,7 +1,7 @@
 ---
 title: "Synergistic-Unique-Redundant Decomposition of Causality (SURD)"
 date: |
-  | Last update: 2025-10-10
+  | Last update: 2025-10-30
   | Last run: `r Sys.Date()`
 output: rmarkdown::html_vignette
 vignette: >
@@ -164,7 +164,7 @@ To investigate the causal influences of air pollutants on the incidence of cardi
 ```{r surd_cvds}
 res_cvds = infocausality::surd(cvd, "cvd",
                                c("rsp", "no2", "so2", "o3"),
-                               lag = 3, bin = 10, cores = 6)
+                               lag = 15, bin = 10, cores = 6)
 ```
 
 The SURD results are shown in the figure below:
@@ -200,7 +200,7 @@ npp
 
 ```{r surd_npp}
 res_npp = infocausality::surd(npp,"npp",c("pre","tem","elev","hfp"),
-                              lag = 3, bin = 10, cores = 6)
+                              lag = 2, bin = 10, cores = 6)
 ```
 
 ```{r fig_surd_npp,fig.width=10,fig.height=3,fig.dpi=300,fig.cap=knitr::asis_output("**Figure 4**. SURD decomposition results between climatic and topographic factors and npp.")}
