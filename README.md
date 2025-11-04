@@ -13,7 +13,7 @@ Release](https://www.r-pkg.org/badges/last-release/infocausality)](https://CRAN.
 <!-- [![Downloads_month](https://cranlogs.r-pkg.org/badges/infocausality)](https://CRAN.R-project.org/package=infocausality) -->
 [![License](https://img.shields.io/badge/license-GPL--3-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![Lifecycle:
-experimental](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://lifecycle.r-lib.org/articles/figures/lifecycle-stable.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/stscl/infocausality/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/stscl/infocausality/actions/workflows/R-CMD-check.yaml)
 [![R-universe](https://stscl.r-universe.dev/badges/infocausality?color=cyan)](https://stscl.r-universe.dev/infocausality)
 
