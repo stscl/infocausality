@@ -8,9 +8,10 @@
 [![CRAN](https://www.r-pkg.org/badges/version/infocausality)](https://CRAN.R-project.org/package=infocausality)
 [![CRAN
 Release](https://www.r-pkg.org/badges/last-release/infocausality)](https://CRAN.R-project.org/package=infocausality)
-<!-- [![CRAN Checks](https://badges.cranchecks.info/worst/infocausality.svg)](https://cran.r-project.org/web/checks/check_results_infocausality.html) -->
-<!-- [![Downloads_all](https://badgen.net/cran/dt/infocausality?color=orange)](https://CRAN.R-project.org/package=infocausality) -->
-<!-- [![Downloads_month](https://cranlogs.r-pkg.org/badges/infocausality)](https://CRAN.R-project.org/package=infocausality) -->
+[![CRAN
+Checks](https://badges.cranchecks.info/worst/infocausality.svg)](https://cran.r-project.org/web/checks/check_results_infocausality.html)
+[![Downloads_all](https://badgen.net/cran/dt/infocausality?color=orange)](https://CRAN.R-project.org/package=infocausality)
+[![Downloads_month](https://cranlogs.r-pkg.org/badges/infocausality)](https://CRAN.R-project.org/package=infocausality)
 [![License](https://img.shields.io/badge/license-GPL--3-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![Lifecycle:
 stable](https://lifecycle.r-lib.org/articles/figures/lifecycle-stable.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
