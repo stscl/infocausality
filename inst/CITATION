@@ -6,5 +6,5 @@ bibentry(
   author   = "Wenbo Lyu",
   year     = "2026",
   note     = "R package version 1.1",
-  doi      = "https://doi.org/10.32614/CRAN.package.infocausality"
+  doi      = "10.32614/CRAN.package.infocausality"
 )
