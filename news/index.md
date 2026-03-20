@@ -2,6 +2,8 @@
 
 ## infocausality 1.1
 
+CRAN release: 2026-03-20
+
 #### supersession noice
 
 - This package is now **superseded** by
