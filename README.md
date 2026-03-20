@@ -14,7 +14,7 @@ Checks](https://badges.cranchecks.info/worst/infocausality.svg)](https://cran.r-
 [![Downloads_month](https://cranlogs.r-pkg.org/badges/infocausality)](https://CRAN.R-project.org/package=infocausality)
 [![License](https://img.shields.io/badge/license-GPL--3-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![Lifecycle:
-stable](https://lifecycle.r-lib.org/articles/figures/lifecycle-stable.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+superseded](https://lifecycle.r-lib.org/articles/figures/lifecycle-superseded.svg)](https://lifecycle.r-lib.org/articles/stages.html#superseded)
 [![R-CMD-check](https://github.com/stscl/infocausality/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/stscl/infocausality/actions/workflows/R-CMD-check.yaml)
 [![R-universe](https://stscl.r-universe.dev/badges/infocausality?color=cyan)](https://stscl.r-universe.dev/infocausality)
 
@@ -35,6 +35,13 @@ and spatial cross-sectional causal analysis.
 > *Refer to the package documentation
 > <https://stscl.github.io/infocausality/> for more detailed
 > information.*
+
+> ⚠️ **Note**: The SURD (Synergistic-Unique-Redundant Decomposition)
+> core computations in `infocausality` are executed via Python bindings.
+> A pure C++ implementation with improved performance and easier
+> deployment has been developed in the
+> [`infoxtr`](https://github.com/stscl/infoxtr) package. For new
+> projects, we recommend using `infoxtr` as a drop-in replacement.
 
 ## Installation
 
