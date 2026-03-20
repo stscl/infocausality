@@ -17,6 +17,13 @@ and spatial cross-sectional causal analysis.
 > <https://stscl.github.io/infocausality/> for more detailed
 > information.*
 
+> ⚠️ **Note**: The SURD (Synergistic-Unique-Redundant Decomposition)
+> core computations in `infocausality` are executed via Python bindings.
+> A pure C++ implementation with improved performance and easier
+> deployment has been developed in the
+> [`infoxtr`](https://github.com/stscl/infoxtr) package. For new
+> projects, we recommend using `infoxtr` as a drop-in replacement.
+
 ## Installation
 
 - Install from [CRAN](https://CRAN.R-project.org/package=infocausality)
