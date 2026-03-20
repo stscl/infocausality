@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/stscl/infocausality/blob/v1.1/inst/CITATION)
+[`inst/CITATION`](https://github.com/stscl/infocausality/blob/main/inst/CITATION)
 
 Lyu W (2026). *infocausality: Information-Theoretic Measure of
 Causality*.
