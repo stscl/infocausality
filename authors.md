@@ -13,12 +13,12 @@ Source:
 Lyu W (2026). *infocausality: Information-Theoretic Measure of
 Causality*.
 [doi:10.32614/CRAN.package.infocausality](https://doi.org/10.32614/CRAN.package.infocausality),
-R package version 1.1.
+R package version 1.2.
 
     @Manual{,
       title = {{infocausality: Information-Theoretic Measure of Causality}},
       author = {Wenbo Lyu},
       year = {2026},
-      note = {R package version 1.1},
+      note = {R package version 1.2},
       doi = {10.32614/CRAN.package.infocausality},
     }

@@ -1,5 +1,7 @@
 # Changelog
 
+## infocausality 1.2
+
 ## infocausality 1.1
 
 CRAN release: 2026-03-20
