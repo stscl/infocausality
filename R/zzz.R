@@ -6,5 +6,5 @@
 
 
 .onAttach = function(...) {
-  packageStartupMessage(" Note: infocausality is now superseded by the 'infoxtr' package.")
+  packageStartupMessage(" Note: infocausality is now superseded by the infoxtr package.")
 }
