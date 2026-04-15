@@ -5,6 +5,6 @@
 }
 
 
-.onAttach <- function(...) {
-  packageStartupMessage(" Note: infocausality is superseded by the 'infoxtr' package.")
+.onAttach = function(...) {
+  packageStartupMessage(" Note: infocausality is now superseded by the 'infoxtr' package.")
 }
